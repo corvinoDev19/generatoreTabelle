@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Generatore HP/PE – inline CSS (una riga) + Libreria JSON + Allineamento</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box }
+  body { margin:0; background:#0a0f14; color:#eaf7ff; font: 500 14px/1.45 Inter, Segoe UI, Roboto, Arial, sans-serif }
+  .wrap { max-width: 1160px; margin: 24px auto; padding: 0 16px }
+  .grid { display:grid; gap:16px; grid-template-columns: 520px 1fr }
+  @media (max-width: 980px){ .grid { grid-template-columns: 1fr } }
+  .card { background:#0f1620; border:1px solid #1f2a3a; border-radius:14px; padding:12px }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+  label { font-size:12px; opacity:.9 }
+  input[type="text"], input[type="number"], input[type="url"], input[type="color"], select {
+    width:100%; padding:8px 10px; border-radius:10px; border:1px solid #2b3a4f; background:#0e1a25; color:#eaf7ff; outline:none
+  }
+  .btn { border:1px solid #2b3647; background:#132034; color:#eaf7ff; border-radius:10px; padding:8px 12px; cursor:pointer }
+  .btn:hover { background:#1a2a42 }
+  textarea { width:100%; min-height:140px; background:#0b1520; border:1px solid #203047; border-radius:10px; color:#cfeaff; padding:10px; white-space:pre; }
+  .preview-box { background:#07101a; border:1px solid #142235; border-radius:16px; padding:14px }
+  .muted { opacity:.8 }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid #2b3a4f; background:#132034; font-size:12px }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 style="margin:0 0 10px; font-size:22px; text-align:center">Generatore snippet <b>HP/PE</b> – inline CSS, una riga</h1>
+    <div class="grid">
+      <div class="card">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px">
+          <div style="font-weight:700">Impostazioni</div>
+          <span class="pill">Libreria schede JSON</span>
+        </div>
+
+        <!-- Libreria schede -->
+        <div class="row" style="margin-bottom:6px">
+          <div style="flex:1;min-width:180px">
+            <label>Nome scheda</label>
+            <input id="sheetName" type="text" placeholder="es. Gojo - preset base">
+          </div>
+          <div style="flex:1;min-width:180px">
+            <label>Seleziona scheda salvata</label>
+            <select id="savedSelect"></select>
+          </div>
+        </div>
+        <div class="row" style="margin-bottom:8px">
+          <button id="saveSheet" class="btn">Salva/aggiorna scheda</button>
+          <button id="loadSheet" class="btn">Carica</button>
+          <button id="deleteSheet" class="btn" style="border-color:#5a2b2b;background:#2a1b1b">Elimina</button>
+          <label for="importFile" class="btn" style="position:relative">Importa JSON<input id="importFile" type="file" accept="application/json" style="position:absolute;inset:0;opacity:0"></label>
+          <button id="exportLib" class="btn">Esporta JSON</button>
+        </div>
+
+        <!-- Base settings -->
+        <div class="row">
+          <div style="flex:1;min-width:160px"><label>Nome (visualizzato)</label><input id="name" type="text" value="Gojo"></div>
+          <div style="flex:1;min-width:160px"><label>GIF/Immagine (URL)</label><input id="img" type="url" value="https://media.tenor.com/zZOt7alSzAMAAAAM/gojo-gojo-satoru.gif"></div>
+        </div>
+
+        <div class="row">
+          <div style="flex:1;min-width:130px"><label>Bar width (px)</label><input id="barW" type="number" min="80" max="800" step="1" value="220"></div>
+          <div style="flex:1;min-width:130px"><label>Bar height (px)</label><input id="barH" type="number" min="6" max="40" step="1" value="12"></div>
+          <div style="flex:1;min-width:130px"><label>Avatar size (px)</label><input id="avatar" type="number" min="32" max="160" step="1" value="64"></div>
+        </div>
+
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>PV max</label><input id="pvMax" type="number" min="1" value="500"></div>
+          <div style="flex:1;min-width:140px"><label>PV restanti</label><input id="pvNow" type="number" min="0" value="500"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>PE max</label><input id="peMax" type="number" min="1" value="500"></div>
+          <div style="flex:1;min-width:140px"><label>PE restanti</label><input id="peNow" type="number" min="0" value="500"></div>
+        </div>
+
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>Colore nome</label><input id="nameColor" type="color" value="#7feaff"></div>
+          <div style="flex:1;min-width:140px"><label>Glow box</label><input id="glow" type="color" value="#7feaff"></div>
+        </div>
+
+        <div class="row" style="margin-top:4px">
+          <div style="flex:1;min-width:140px"><label>PV gradiente (inizio)</label><input id="pvStart" type="color" value="#6a00ff"></div>
+          <div style="flex:1;min-width:140px"><label>PV gradiente (fine)</label><input id="pvEnd" type="color" value="#c400ff"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>PE gradiente (inizio)</label><input id="peStart" type="color" value="#2f48c8"></div>
+          <div style="flex:1;min-width:140px"><label>PE gradiente (fine)</label><input id="peEnd" type="color" value="#7feaff"></div>
+        </div>
+
+        <div class="row" style="margin-top:4px">
+          <div style="flex:1;min-width:140px"><label>Bar bg</label><input id="barBg" type="color" value="#0b1520"></div>
+          <div style="flex:1;min-width:140px"><label>Bar border</label><input id="barBd" type="color" value="#203047"></div>
+        </div>
+
+        <div style="font-weight:700;margin:10px 0 4px">Contenitore (stile base preset)</div>
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>Border color</label><input id="boxBd" type="color" value="#7feaff"></div>
+          <div style="flex:1;min-width:140px"><label>Background color</label><input id="boxBg" type="color" value="#0c1620"></div>
+          <div style="flex:1;min-width:140px"><label>Background alpha</label><input id="boxAlpha" type="number" min="0" max="1" step="0.01" value="0.6"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:140px"><label>Border radius (px)</label><input id="boxRadius" type="number" min="0" max="40" step="1" value="10"></div>
+          <div style="flex:1;min-width:140px"><label>Allineamento</label>
+            <select id="align">
+              <option value="left">Sinistra</option>
+              <option value="center" selected>Centro</option>
+              <option value="right">Destra</option>
+            </select>
+          </div>
+        </div>
+        <div class="muted" style="margin-top:2px">Default contenitore: <code>margin:6px 6px; padding:8px 10px; border-radius:10px; border:1px solid #7feaff; background: rgba(12,22,32,0.6)</code></div>
+
+        <div class="row" style="margin-top:6px">
+          <label class="row" style="gap:6px"><input id="wrapSize" type="checkbox" checked> <span class="muted">wrappa in <code>[size=1]...[/size]</code></span></label>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <button id="copy" class="btn">Copia codice</button>
+          <span id="copied" class="muted" style="display:none">copiato ✅</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Anteprima</div>
+        <div class="preview-box">
+          <div id="preview"></div>
+        </div>
+
+        <div style="font-weight:700;margin:10px 0 6px">Codice generato (una riga)</div>
+        <textarea id="code" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+<script>
+function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+const el = s => document.querySelector(s);
+
+/* ===== util colore ===== */
+function hexToRgb(hex){
+  let c = String(hex||'').replace('#','').trim();
+  if(c.length===3){ c = c.split('').map(x=>x+x).join(''); }
+  const n = parseInt(c || '000000', 16);
+  return { r:(n>>16)&255, g:(n>>8)&255, b:(n)&255 };
+}
+function rgbaFromHexAlpha(hex, a){
+  const {r,g,b} = hexToRgb(hex||'#000000');
+  const alpha = clamp(+a||0, 0, 1);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+/* ===== stato attuale -> oggetto ===== */
+function readState(){
+  return {
+    name: el('#name').value || 'Nome',
+    img: el('#img').value || '',
+    barW: +el('#barW').value || 220,
+    barH: +el('#barH').value || 12,
+    avatar: +el('#avatar').value || 64,
+    pvMax: +el('#pvMax').value || 1,
+    pvNow: +el('#pvNow').value || 0,
+    peMax: +el('#peMax').value || 1,
+    peNow: +el('#peNow').value || 0,
+    nameColor: el('#nameColor').value || '#7feaff',
+    glow: el('#glow').value || '#7feaff',
+    pvStart: el('#pvStart').value || '#6a00ff',
+    pvEnd: el('#pvEnd').value || '#c400ff',
+    peStart: el('#peStart').value || '#2f48c8',
+    peEnd: el('#peEnd').value || '#7feaff',
+    barBg: el('#barBg').value || '#0b1520',
+    barBd: el('#barBd').value || '#203047',
+    sizeWrap: el('#wrapSize').checked,
+    boxBd: el('#boxBd').value || '#7feaff',
+    boxBg: el('#boxBg').value || '#0c1620',
+    boxAlpha: +el('#boxAlpha').value || 0.6,
+    boxRadius: +el('#boxRadius').value || 10,
+    align: el('#align').value || 'center'
+  };
+}
+
+/* ===== applica oggetto -> UI ===== */
+function applyState(s){
+  if(!s) return;
+  el('#name').value = s.name ?? 'Nome';
+  el('#img').value = s.img ?? '';
+  el('#barW').value = s.barW ?? 220;
+  el('#barH').value = s.barH ?? 12;
+  el('#avatar').value = s.avatar ?? 64;
+  el('#pvMax').value = s.pvMax ?? 1;
+  el('#pvNow').value = s.pvNow ?? 0;
+  el('#peMax').value = s.peMax ?? 1;
+  el('#peNow').value = s.peNow ?? 0;
+  el('#nameColor').value = s.nameColor ?? '#7feaff';
+  el('#glow').value = s.glow ?? '#7feaff';
+  el('#pvStart').value = s.pvStart ?? '#6a00ff';
+  el('#pvEnd').value = s.pvEnd ?? '#c400ff';
+  el('#peStart').value = s.peStart ?? '#2f48c8';
+  el('#peEnd').value = s.peEnd ?? '#7feaff';
+  el('#barBg').value = s.barBg ?? '#0b1520';
+  el('#barBd').value = s.barBd ?? '#203047';
+  el('#wrapSize').checked = !!s.sizeWrap;
+  el('#boxBd').value = s.boxBd ?? '#7feaff';
+  el('#boxBg').value = s.boxBg ?? '#0c1620';
+  el('#boxAlpha').value = s.boxAlpha ?? 0.6;
+  el('#boxRadius').value = s.boxRadius ?? 10;
+  el('#align').value = s.align ?? 'center';
+}
+
+/* ===== generatore snippet ===== */
+function buildSnippet(cfg){
+  let {name, img, barW, barH, avatar, pvMax, pvNow, peMax, peNow, nameColor, glow, pvStart, pvEnd, peStart, peEnd, barBg, barBd, sizeWrap, boxBd, boxBg, boxAlpha, boxRadius, align} = cfg;
+  pvMax = Math.max(1, +pvMax||1); peMax = Math.max(1, +peMax||1);
+  pvNow = clamp(+pvNow||0, 0, pvMax); peNow = clamp(+peNow||0, 0, peMax);
+  const pvPct = ((pvNow / pvMax) * 100).toFixed(2);
+  const pePct = ((peNow / peMax) * 100).toFixed(2);
+  const boxBgRgba = rgbaFromHexAlpha(boxBg, boxAlpha);
+
+  let alignStyle = '';
+  if(align==='center'){ alignStyle = 'display:block;width:fit-content;margin:6px auto;'; }
+  else if(align==='right'){ alignStyle = 'display:block;width:fit-content;margin:6px 6px 6px auto;'; }
+  else { alignStyle = 'display:block;width:fit-content;margin:6px auto 6px 6px;'; }
+
+  const fieldset =
+`<fieldset style="${alignStyle}padding:8px 10px;background:${boxBgRgba};border:1px solid ${boxBd};border-radius:${boxRadius}px;color:#eaf7ff;font:500 13px/1.4 Inter,Segoe UI,Roboto,Arial,sans-serif;display:flex;align-items:center;gap:12px;max-width:100%;box-sizing:border-box;overflow:hidden"><img src="${img}" alt="Profile" style="width:${avatar}px;height:${avatar}px;object-fit:cover;border-radius:12px;border:2px solid #2b3a4f;box-shadow:0 4px 14px rgba(0,0,0,.35)"><div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><b style="font-size:1.2em;color:${nameColor};">${name}</b><span style="font-family:monospace;font-size:1em;opacity:.9">Pv: ${pvNow}/${pvMax}</span></div><div style="position:relative;width:${barW}px;max-width:100%;height:${barH}px;background:${barBg};border:1px solid ${barBd};border-radius:999px;overflow:hidden;box-shadow:inset 0 0 8px #0008;text-align:left;direction:ltr"><div style="width:${pvPct}%;height:100%;display:block;;margin:0;background:linear-gradient(90deg,${pvStart},${pvEnd});box-shadow:inset 0 0 10px ${pvEnd}66"></div></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:2px"><span style="font-family:monospace;font-size:1em;opacity:.9">Pe: ${peNow}/${peMax}</span></div><div style="position:relative;width:${barW}px;max-width:100%;height:${barH}px;background:${barBg};border:1px solid ${barBd};border-radius:999px;overflow:hidden;box-shadow:inset 0 0 8px #0008;text-align:left;direction:ltr"><div style="width:${pePct}%;height:100%;display:block;;margin:0;background:linear-gradient(90deg,${peStart},${peEnd});box-shadow:inset 0 0 10px ${peEnd}66"></div></div></div></fieldset>`;
+
+  return sizeWrap ? `[size=1] ${fieldset} [/size]` : fieldset;
+}
+
+function update(){
+  const data = readState();
+  const code = buildSnippet(data);
+  el('#code').value = code.replace(/\s*\n+\s*/g,'');
+  el('#preview').innerHTML = code;
+}
+
+/* ===== Libreria in memoria + localStorage ===== */
+let LIB = {};
+const LS_KEY = 'gdr_hp_pe_library_v2';
+
+function loadFromLocal(){
+  try{
+    const raw = localStorage.getItem(LS_KEY);
+    if(!raw) return;
+    const obj = JSON.parse(raw);
+    if(obj && typeof obj === 'object') LIB = obj;
+  }catch{}
+}
+function saveToLocal(){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(LIB)); }catch{}
+}
+
+function refreshSavedSelect(preselect){
+  const sel = el('#savedSelect');
+  const names = Object.keys(LIB).sort((a,b)=>a.localeCompare(b,'it'));
+  sel.innerHTML = names.length ? names.map(n=>`<option value="${n}">${n}</option>`).join('') : '<option value="">(nessuna)</option>';
+  if(preselect && LIB[preselect]) sel.value = preselect;
+}
+
+function btnSaveSheet(){
+  const name = (el('#sheetName').value || '').trim();
+  if(!name){ alert('Inserisci un nome scheda.'); return; }
+  LIB[name] = readState();
+  saveToLocal();
+  refreshSavedSelect(name);
+  alert('Scheda salvata.');
+}
+function btnLoadSheet(){
+  const name = el('#savedSelect').value;
+  if(!name || !LIB[name]){ alert('Seleziona una scheda valida.'); return; }
+  applyState(LIB[name]);
+  update();
+}
+function btnDeleteSheet(){
+  const name = el('#savedSelect').value;
+  if(!name || !LIB[name]){ alert('Seleziona una scheda da eliminare.'); return; }
+  if(!confirm(`Eliminare la scheda "${name}"?`)) return;
+  delete LIB[name];
+  saveToLocal();
+  refreshSavedSelect();
+}
+
+function btnExportLib(){
+  const blob = new Blob([JSON.stringify(LIB, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'schede_hp_pe.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+function onImportFile(e){
+  const f = e.target.files?.[0];
+  if(!f) return;
+  f.text().then(txt=>{
+    try{
+      const obj = JSON.parse(txt);
+      if(!obj || typeof obj !== 'object'){ alert('JSON non valido.'); return; }
+      LIB = {...LIB, ...obj}; // merge
+      saveToLocal();
+      refreshSavedSelect();
+      alert('Libreria importata.');
+    }catch(err){
+      alert('Errore JSON: ' + err.message);
+    } finally {
+      e.target.value='';
+    }
+  });
+}
+
+/* ===== Bind ===== */
+['#name','#img','#barW','#barH','#avatar','#pvMax','#pvNow','#peMax','#peNow','#nameColor','#glow','#pvStart','#pvEnd','#peStart','#peEnd','#barBg','#barBd','#wrapSize','#boxBd','#boxBg','#boxAlpha','#boxRadius','#align'].forEach(s => {
+  document.querySelector(s).addEventListener('input', update);
+});
+el('#copy').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(el('#code').value);
+    el('#copied').style.display = 'inline';
+    setTimeout(() => el('#copied').style.display = 'none', 1200);
+  } catch(e){ alert('Copia non riuscita'); }
+});
+
+el('#saveSheet').addEventListener('click', btnSaveSheet);
+el('#loadSheet').addEventListener('click', btnLoadSheet);
+el('#deleteSheet').addEventListener('click', btnDeleteSheet);
+el('#exportLib').addEventListener('click', btnExportLib);
+el('#importFile').addEventListener('change', onImportFile);
+
+/* ===== init ===== */
+loadFromLocal();
+refreshSavedSelect();
+update();
+</script>
+</body>
+</html>

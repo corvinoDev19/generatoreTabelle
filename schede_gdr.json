@@ -144,7 +144,7 @@
         "type": "effect",
         "title": "✦ Ipotermia",
         "tag": "[SAB - Area]",
-        "html": "<p>La temperatura corporea crolla oltre i limiti di sopravvivenza, logorando le riserve vitali dell’avversario.&nbsp;<em style=\"color: rgb(62, 195, 237);\">L’avversario deve spendere il doppio dei PE previsti per evitare un crollo delle proprie capacità. In caso contrario, tutti i suoi Parametri si riducono passivamente in base al proprio valore di SAB.</em>&nbsp;[SAB- Area]</p>",
+        "html": "<p>La temperatura corporea crolla oltre i limiti di sopravvivenza, logorando le riserve vitali dell’avversario.&nbsp;<em style=\"color: rgb(62, 195, 237); background-color: transparent;\">L’avversario deve spendere il doppio dei PE previsti per evitare il crollo delle proprie capacità. In caso contrario, gli effetti e le abilità da lui attivati si svincolano dall’azione, incapaci di concretizzarsi o di produrre alcun risultato.</em><span style=\"color: rgb(204, 224, 245);\">&nbsp;</span>[SAB- Area]</p>",
         "tColor": "#3ec3ed",
         "bColor": "#3ec3ed",
         "bA": 0.4,
