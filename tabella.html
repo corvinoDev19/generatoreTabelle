@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Editor Scheda GdR → ForumFree (verticale, JSON, autosave)</title>
+
+<!-- Tailwind (CDN) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Quill -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css">
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+<!-- Sortable -->
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+
+<style>
+  :root { color-scheme: dark; }
+  body { background:#0a0f14; color:#eaf7ff; font-feature-settings:"ss01" 1,"tnum" 1; }
+  .card { background:#0f1620; border:1px solid #1f2a3a; border-radius:16px; padding:16px; }
+  .quill .ql-toolbar { background:#0d1824; border-color:#263447; border-radius:12px 12px 0 0; }
+  .quill .ql-container { background:#0b1620; border-color:#263447; border-radius:0 0 12px 12px; min-height: 160px; }
+  .muted { opacity:.8 }
+  .pill { white-space:nowrap }
+  .scroll-panel { max-height: 520px; overflow:auto; }
+  .item { background:#0e1722; border:1px dashed #2b3a4f; border-radius:16px; padding:12px; }
+  .ghost { opacity:.5 }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div class="max-w-[1200px] mx-auto px-4 py-6 space-y-6">
+
+  <!-- Top bar -->
+  <div class="flex flex-wrap gap-2 justify-end">
+    <button id="btnOpenFS" class="px-3 py-2 rounded-lg bg-[#142235] border border-[#2b3647]">Apri JSON…</button>
+    <button id="btnSaveFS" class="px-3 py-2 rounded-lg bg-[#142235] border border-[#2b3647]">Salva su file</button>
+    <a href="tecncia.html" class="px-3 py-2 rounded-lg bg-[#142235] border border-[#2b3647]">Tecniche</a>
+  </div>
+
+  <h1 class="text-center text-xl font-semibold">Editor Scheda GdR → ForumFree</h1>
+
+  <!-- Libreria + Dati base -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="card space-y-4">
+      <div class="flex items-end gap-2">
+        <div class="flex-1">
+          <label class="block text-xs muted mb-1">Libreria Schede (dal file aperto)</label>
+          <select id="libSelect" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2"></select>
+        </div>
+        <button id="btnOpenFromLib" class="px-3 py-2 rounded-lg bg-[#132034] border border-[#2b3647]">Apri</button>
+        <button id="btnDeleteFromLib" class="px-3 py-2 rounded-lg bg-[#3a171c] border border-[#5a2a35]">Elimina</button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-3">
+        <div>
+          <label class="block text-xs muted mb-1">Nome</label>
+          <input id="fName" type="text" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2" value="Kuzan">
+        </div>
+        <div>
+          <label class="block text-xs muted mb-1">Classe</label>
+          <input id="fClass" type="text" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2" value="Sabotaggio">
+        </div>
+        <div>
+          <label class="block text-xs muted mb-1">Avatar URL</label>
+          <input id="fAvatar" type="url" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2" value="https://i.pinimg.com/736x/d5/c0/f9/d5c0f9b8019f3bb6a1d9e2624acff8d5.jpg">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex items-center gap-2">
+          <input id="accPick" type="color" value="#29e5ff" class="w-9 h-8 rounded">
+          <div class="flex-1">
+            <label class="block text-xs muted mb-1">Colore accento</label>
+            <input id="accHex" type="text" value="#29e5ff" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2">
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="bgPick" type="color" value="#0b0e12" class="w-9 h-8 rounded">
+          <div class="flex-1">
+            <label class="block text-xs muted mb-1">Sfondo card</label>
+            <input id="bgHex" type="text" value="#0b0e12" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2">
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="fgPick" type="color" value="#eaf7ff" class="w-9 h-8 rounded">
+          <div class="flex-1">
+            <label class="block text-xs muted mb-1">Testo card</label>
+            <input id="fgHex" type="text" value="#eaf7ff" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs muted mb-1">Lato avatar</label>
+          <select id="fSide" class="w-full rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2">
+            <option value="right" selected>Destra</option>
+            <option value="left">Sinistra</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Parametri -->
+      <div>
+        <div class="font-semibold mb-2">Parametri</div>
+        <div class="grid grid-cols-3 gap-2">
+          <div><label class="block text-[11px] muted">PV</label><input id="pPV" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="1000" min="0"></div>
+          <div><label class="block text-[11px] muted">PE</label><input id="pPE" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="2250" min="0"></div>
+          <div><label class="block text-[11px] muted">ATK</label><input id="pATK" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="500" min="0"></div>
+
+          <div><label class="block text-[11px] muted">DEF</label><input id="pDEF" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="500" min="0"></div>
+          <div><label class="block text-[11px] muted">CTR</label><input id="pCTR" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="500" min="0"></div>
+          <div><label class="block text-[11px] muted">SUP</label><input id="pSUP" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="1250" min="0"></div>
+
+          <div><label class="block text-[11px] muted">SAB</label><input id="pSAB" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="2500" min="0"></div>
+          <div><label class="block text-[11px] muted">Eff.</label><input id="pEFF" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="250" min="0"></div>
+          <div><label class="block text-[11px] muted">Slot</label><input id="pSLOT" type="number" class="w-full px-3 py-2 rounded-lg border border-[#2b3a4f] bg-[#0e1a25]" value="1" min="0"></div>
+        </div>
+      </div>
+
+      <!-- Stili contenitori -->
+      <div>
+        <div class="font-semibold mb-2">Stili contenitori</div>
+        <div class="grid grid-cols-1 gap-2">
+          <div class="flex items-center gap-3">
+            <span class="w-24 text-sm muted">Abilità bordo</span>
+            <input id="abilBorderPick" type="color" value="#7feaff" class="w-9 h-8 rounded">
+            <input id="abilBorderAlpha" type="range" min="0" max="1" step="0.01" value="0.35" class="flex-1">
+            <span class="text-xs muted">opacità</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-24 text-sm muted">Abilità sfondo</span>
+            <input id="abilBgPick" type="color" value="#7feaff" class="w-9 h-8 rounded">
+            <input id="abilBgAlpha" type="range" min="0" max="1" step="0.01" value="0.06" class="flex-1">
+            <span class="text-xs muted">opacità</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-24 text-sm muted">Effetti bordo</span>
+            <input id="effBorderPick" type="color" value="#7feaff" class="w-9 h-8 rounded">
+            <input id="effBorderAlpha" type="range" min="0" max="1" step="0.01" value="0.35" class="flex-1">
+            <span class="text-xs muted">opacità</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-24 text-sm muted">Effetti sfondo</span>
+            <input id="effBgPick" type="color" value="#7feaff" class="w-9 h-8 rounded">
+            <input id="effBgAlpha" type="range" min="0" max="1" step="0.01" value="0.05" class="flex-1">
+            <span class="text-xs muted">opacità</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap gap-2">
+        <button id="btnNew" class="px-3 py-2 rounded-lg bg-[#132034] border border-[#2b3647]">Nuova scheda</button>
+        <button id="btnSaveToLib" class="px-3 py-2 rounded-lg bg-[#1d3a1f] border border-[#31543a]">Salva scheda nella libreria</button>
+      </div>
+    </div>
+
+    <!-- Anteprima + Codice -->
+    <div class="space-y-4">
+      <div class="card">
+        <div class="muted mb-2">Anteprima live</div>
+        <div id="preview" class="rounded-xl border border-[#142235] bg-[#07101a] p-4"></div>
+      </div>
+
+      <div class="card">
+        <div class="flex items-center justify-between mb-2">
+          <div class="font-semibold">Codice ForumFree (una riga)</div>
+          <div class="flex items-center gap-2">
+            <button id="gen" class="px-3 py-2 rounded-lg bg-[#132034] border border-[#2b3647]">Genera</button>
+            <button id="copyBtn" class="px-3 py-2 rounded-lg bg-[#132034] border border-[#2b3647]">Copia</button>
+            <span id="copied" class="muted hidden">Copiato ✅</span>
+          </div>
+        </div>
+        <textarea id="code" class="w-full min-h-[140px] rounded-xl border border-[#203047] bg-[#0b1520] text-[#cfeaff] p-3" readonly></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sezioni con scroll -->
+  <div class="grid grid-cols-1 gap-6">
+    <!-- Abilità -->
+    <div class="card">
+      <details open>
+        <summary class="cursor-pointer font-semibold flex items-center justify-between">
+          <span>Abilità <span class="muted">(aperte di default)</span></span>
+          <button id="addAbility" class="px-3 py-1 rounded-lg bg-[#132034] border border-[#2b3647]">+ Aggiungi Abilità</button>
+        </summary>
+        <div class="mt-3 scroll-panel">
+          <div id="abilities" class="flex flex-col gap-3"></div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Effetti -->
+    <div class="card">
+      <details>
+        <summary class="cursor-pointer font-semibold flex items-center justify-between">
+          <span>Effetti <span class="muted">(chiusi di default)</span></span>
+          <button id="addEffect" class="px-3 py-1 rounded-lg bg-[#132034] border border-[#2b3647]">+ Aggiungi Effetto</button>
+        </summary>
+        <div class="mt-3 scroll-panel">
+          <div id="effects" class="flex flex-col gap-3"></div>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <!-- Import da codice (opzionale) -->
+  <div class="card">
+    <div class="font-semibold mb-2">Importa da codice ForumFree</div>
+    <textarea id="importBox" placeholder="Incolla qui il tuo codice una riga…" class="w-full min-h-[120px] rounded-xl border border-[#203047] bg-[#0b1520] text-[#cfeaff] p-3"></textarea>
+    <div class="flex items-center gap-2 mt-2">
+      <button id="doImport" class="px-3 py-2 rounded-lg bg-[#132034] border border-[#2b3647]">Importa</button>
+      <span class="muted">Best effort.</span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ========= helpers ========= */
+const el = s => document.querySelector(s);
+const create = (t,p={}) => Object.assign(document.createElement(t),p);
+const minify = s => s.replace(/\n+/g,'').replace(/\s{2,}/g,' ').replace(/> </g,'><').trim();
+
+const hexToRgb = hex=>{
+  let c = (hex||'').replace('#','');
+  if(c.length===3) c=c.split('').map(x=>x+x).join('');
+  const n=parseInt(c||'000000',16);
+  return {r:(n>>16)&255,g:(n>>8)&255,b:n&255};
+};
+const rgba = (hex,a)=>{
+  const {r,g,b}=hexToRgb(hex||'#000000');
+  return `rgba(${r}, ${g}, ${b}, ${a})`;
+};
+
+// preserva formattazioni base ma toglie cose pericolose
+const sanitizeInline = html=>{
+  const temp=document.createElement('div');
+  temp.innerHTML=html;
+
+  const allowed = new Set(['DIV','B','I','U','SPAN','BR','A','IMG','P','UL','OL','LI']);
+  const styleOK = new Set(['color','background-color','font-weight','text-decoration','text-decoration-line','text-align']);
+
+  const walk = n=>{
+    [...n.childNodes].forEach(ch=>{
+      if(ch.nodeType===1){
+        if(!allowed.has(ch.tagName)){ ch.replaceWith(...ch.childNodes); return; }
+        [...ch.attributes].forEach(a=>{
+          const k=a.name.toLowerCase();
+          if(k.startsWith('on')) ch.removeAttribute(a.name);
+          if(k==='style'){
+            const safe=[];
+            (a.value||'').split(';').forEach(rule=>{
+              const [p,v]=(rule||'').split(':').map(s=>s&&s.trim());
+              if(p && styleOK.has(p.toLowerCase()) && v) safe.push(p+':'+v);
+            });
+            ch.setAttribute('style',safe.join(';'));
+          }
+          if(ch.tagName==='A' && k==='href' && !/^https?:/i.test(a.value)) ch.removeAttribute('href');
+          if(ch.tagName==='IMG' && !['src','alt','title','style'].includes(a.name)) ch.removeAttribute(a.name);
+        });
+        if(['DIV','P'].includes(ch.tagName) && ch.innerHTML==='<br>') ch.outerHTML='<p><br></p>';
+        walk(ch);
+      }
+    });
+    return n.innerHTML;
+  };
+  return walk(temp);
+};
+
+// normalizza testi multilinea per Quill
+const normalizeForQuill = html => {
+  if(!html) return '';
+  if(!/[<>]/.test(html)) {
+    return html.split(/\r?\n/).map(line=>{
+      if(!line.trim()) return '<p><br></p>';
+      return '<p>'+line.replace(/ {2}/g,' &nbsp;')+'</p>';
+    }).join('');
+  }
+  return html.replace(/(<br>\s*){3,}/g,'<br><br>');
+};
+
+/* ========= Quill ========= */
+const qModules = { toolbar:[['bold','italic','underline'],[{color:[]},{background:[]}],[{list:'ordered'},{list:'bullet'}],[{'align':[]}],['link','clean']] };
+const makeQuill = (node)=>{
+  const q = new Quill(node,{ theme:'snow', modules:qModules });
+  q.on('text-change', updatePreview);
+  return q;
+};
+
+/* ========= Item builder (verticale) ========= */
+const makeItem = (kind='ability')=>{
+  const item = create('div',{className:'item'});
+  const head = create('div',{className:'flex items-center justify-between gap-2'});
+  const left = create('div',{className:'flex items-center gap-2 flex-1'});
+  const title = create('input',{type:'text',placeholder:kind==='ability'?'Titolo abilità (es. ✦ Hie Hie no Mi)':'Titolo effetto (es. ✦ Intorpidimento)',className:'flex-1 rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2'});
+  const tag = create('input',{type:'text',placeholder:kind==='ability'?'[x3] opzionale':'[SAB - Area] opzionale',className:'w-44 rounded-lg border border-[#2b3a4f] bg-[#0e1a25] px-3 py-2'});
+  left.append(title,tag);
+  const delBtn = create('button',{className:'px-3 py-2 rounded-lg bg-[#3a171c] border border-[#5a2a35]',textContent:'Elimina'});
+  head.append(left,delBtn);
+
+  const mini = create('div',{className:'flex flex-wrap items-center gap-3 my-2'});
+  mini.innerHTML = `
+    <span class="text-sm muted">Titolo</span><input class="tPick" type="color" value="#7feaff">
+    <span class="text-sm muted">Bordo</span><input class="bPick" type="color" value="#7feaff"><input class="bAlpha" type="range" min="0" max="1" step="0.01" value="0.35" class="w-40"><span class="text-xs muted">opacità</span>
+    <span class="text-sm muted">Sfondo</span><input class="bgPick" type="color" value="#7feaff"><input class="bgAlpha" type="range" min="0" max="1" step="0.01" value="0.06" class="w-40"><span class="text-xs muted">opacità</span>
+  `;
+
+  const qwrap = create('div',{className:'quill rounded-lg overflow-hidden'});
+  const editor = create('div'); qwrap.append(editor);
+
+  item.append(head,mini,qwrap);
+
+  const q = makeQuill(editor);
+  const tPick=mini.querySelector('.tPick'), bPick=mini.querySelector('.bPick'), bAlpha=mini.querySelector('.bAlpha'), bgPick=mini.querySelector('.bgPick'), bgAlpha=mini.querySelector('.bgAlpha');
+  [title,tag,tPick,bPick,bAlpha,bgPick,bgAlpha].forEach(n=>n.addEventListener('input',updatePreview));
+  delBtn.onclick=()=>{ item.remove(); updatePreview(); };
+
+  item.__getData = ()=>({
+    type:kind,
+    title:title.value.trim(),
+    tag:tag.value.trim(),
+    html:q.root.innerHTML.trim(),
+    tColor:tPick.value,
+    bColor:bPick.value,
+    bA:parseFloat(bAlpha.value||0),
+    bgColor:bgPick.value,
+    bgA:parseFloat(bgAlpha.value||0)
+  });
+  item.__setHtml = (html)=>{ q.root.innerHTML = normalizeForQuill(html); };
+
+  return item;
+};
+
+/* ========= Liste + drag ========= */
+const abilities = el('#abilities'), effects = el('#effects');
+const addAbility = ()=>{ abilities.append(makeItem('ability')); updatePreview(); };
+const addEffect  = ()=>{ effects.append(makeItem('effect')); updatePreview(); };
+el('#addAbility').onclick = addAbility;
+el('#addEffect').onclick  = addEffect;
+
+Sortable.create(abilities,{ animation:150, ghostClass:'ghost', onSort:updatePreview });
+Sortable.create(effects,{   animation:150, ghostClass:'ghost', onSort:updatePreview });
+
+/* ========= sync colore picker ↔ hex ========= */
+function bindColor(pickSel,hexSel){
+  const p=el(pickSel), h=el(hexSel);
+  const sync=()=>{ if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(h.value)) p.value=h.value; updatePreview(); };
+  p.addEventListener('input',()=>{ h.value=p.value; updatePreview(); });
+  h.addEventListener('input',sync);
+}
+bindColor('#accPick','#accHex'); bindColor('#bgPick','#bgHex'); bindColor('#fgPick','#fgHex');
+
+/* ========= Preview ========= */
+[
+  '#fName','#fClass','#fAvatar','#accHex','#bgHex','#fgHex','#fSide',
+  '#pPV','#pPE','#pATK','#pDEF','#pCTR','#pSUP','#pSAB','#pEFF','#pSLOT',
+  '#abilBorderPick','#abilBorderAlpha','#abilBgPick','#abilBgAlpha',
+  '#effBorderPick','#effBorderAlpha','#effBgPick','#effBgAlpha'
+].forEach(s=>el(s).addEventListener('input',updatePreview));
+
+const pill = (label,val,accent)=>`<span class="pill" style="display:inline-block;padding:4px 10px;margin:0 6px 6px 0;border:1px solid ${accent};border-radius:999px;background:${rgba(accent,.12)};font-size:10pt;">${label}: <b style="color:${accent}">${val}</b></span>`;
+const stat = (label,val,accent)=>`<span class="pill" style="display:inline-block;padding:4px 10px;margin:0 6px 6px 0;border:1px solid ${rgba(accent,.35)};border-radius:10px;background:${rgba(accent,.10)};font-size:10pt;"><b style="color:${accent}">${label}</b>: ${val}</span>`;
+
+function renderPreview(){
+  const name=el('#fName').value.trim()||'Senza Nome';
+  const klass=el('#fClass').value.trim()||'—';
+  const avatar=el('#fAvatar').value.trim();
+  const accent=el('#accHex').value.trim()||'#29e5ff';
+  const bg=el('#bgHex').value.trim()||'#0b0e12';
+  const fg=el('#fgHex').value.trim()||'#eaf7ff';
+  const side=el('#fSide').value;
+
+  const P = { PV:el('#pPV').value||'0', PE:el('#pPE').value||'0', ATK:el('#pATK').value||'0',
+              DEF:el('#pDEF').value||'0', CTR:el('#pCTR').value||'0', SUP:el('#pSUP').value||'0',
+              SAB:el('#pSAB').value||'0', EFF:el('#pEFF').value||'0', SLOT:el('#pSLOT').value||'0' };
+
+  const abilData=[...abilities.children].map(n=>n.__getData());
+  const effData =[...effects.children].map(n=>n.__getData());
+
+  const avatarDiv = avatar ? `<div style="float:${side};margin:2px 0 0 12px;text-align:right;"><img src="${avatar}" style="width:110px;height:110px;border-radius:50%;border:2px solid ${accent};object-fit:cover;display:block;"></div>` : '';
+
+  const abilHtml = abilData.map(a=>{
+    const tCol=a.tColor||accent, bCol=rgba(a.bColor||el('#abilBorderPick').value, a.bA ?? parseFloat(el('#abilBorderAlpha').value||0.35)), bgCol=rgba(a.bgColor||el('#abilBgPick').value, a.bgA ?? parseFloat(el('#abilBgAlpha').value||0.06));
+    const tag=a.tag? `<span style="opacity:.8;">${a.tag}</span>`:'';
+    return `<div style="margin:6px 0;padding:10px;border-radius:12px;background:${bgCol};border:1px solid ${bCol};"><div style="font-weight:700;color:${tCol};margin-bottom:4px;">${a.title||'✦ Abilità'}${tag}</div><div>${a.html||''}</div></div>`;
+  }).join('');
+
+  const effHtml = effData.map(e=>{
+    const tCol=e.tColor||accent, bCol=rgba(e.bColor||el('#effBorderPick').value, e.bA ?? parseFloat(el('#effBorderAlpha').value||0.35)), bgCol=rgba(e.bgColor||el('#effBgPick').value, e.bgA ?? parseFloat(el('#effBgAlpha').value||0.05));
+    const tag=e.tag? `<span style="opacity:.8;">${e.tag}</span>`:'';
+    return `<div style="display:block;margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${bCol};background:${bgCol};"><b style="color:${tCol};">${e.title||'✦ Effetto'}</b>${tag? ' — ' + tag : ''}<div style="margin-top:6px">${e.html||''}</div></div>`;
+  }).join('');
+
+  el('#preview').innerHTML =
+  `<div style="box-sizing:border-box;background:${bg};color:${fg};border:2px solid ${accent};border-radius:16px;padding:12px;margin:0 auto;font:500 10pt 'Courier New',monospace;line-height:1.35;letter-spacing:.1px;">
+    ${avatarDiv}
+    <div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div>
+    <div style="white-space:normal;margin-bottom:6px;">
+      ${pill('Nome',name,accent)}${pill('Classe',klass,accent)}
+      ${stat('PV',P.PV,accent)}${stat('PE',P.PE,accent)}${stat('ATK',P.ATK,accent)}${stat('DEF',P.DEF,accent)}${stat('CTR',P.CTR,accent)}${stat('SUP',P.SUP,accent)}${stat('SAB',P.SAB,accent)}${stat('Eff.',P.EFF,accent)}${stat('Slot',P.SLOT,accent)}
+    </div>
+    <details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${rgba(accent,.05)};">
+      <summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Abilità</summary>
+      <div style="margin-top:6px;">${abilHtml||'<div class="muted">Nessuna abilità…</div>'}</div>
+    </details>
+    <details style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${rgba(accent,.05)};">
+      <summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Effetti</summary>
+      <div style="margin-top:6px;">${effHtml||'<div class="muted">Nessun effetto…</div>'}</div>
+    </details>
+    <div style="clear:both;"></div>
+  </div>`;
+}
+function updatePreview(){ renderPreview(); }
+
+/* ========= Generatore codice (autosave) ========= */
+function sheetFromUI(){
+  const getList = (root)=>[...root.children].map(n=>n.__getData());
+  return {
+    name: el('#fName').value.trim(),
+    class: el('#fClass').value.trim(),
+    avatar: el('#fAvatar').value.trim(),
+    colors: { accent:el('#accHex').value.trim(), bg:el('#bgHex').value.trim(), fg:el('#fgHex').value.trim(), side:el('#fSide').value },
+    stats: { PV:+el('#pPV').value||0, PE:+el('#pPE').value||0, ATK:+el('#pATK').value||0, DEF:+el('#pDEF').value||0, CTR:+el('#pCTR').value||0, SUP:+el('#pSUP').value||0, SAB:+el('#pSAB').value||0, EFF:+el('#pEFF').value||0, SLOT:+el('#pSLOT').value||0 },
+    styles:{ abilBorder:{c:el('#abilBorderPick').value, a:+el('#abilBorderAlpha').value}, abilBg:{c:el('#abilBgPick').value, a:+el('#abilBgAlpha').value}, effBorder:{c:el('#effBorderPick').value, a:+el('#effBorderAlpha').value}, effBg:{c:el('#effBgPick').value, a:+el('#effBgAlpha').value} },
+    abilities: getList(abilities),
+    effects: getList(effects)
+  };
+}
+
+function uiFromSheet(S){
+  el('#fName').value=S.name||'';
+  el('#fClass').value=S.class||'';
+  el('#fAvatar').value=S.avatar||'';
+  el('#accHex').value=S.colors?.accent||'#29e5ff'; el('#accPick').value=el('#accHex').value;
+  el('#bgHex').value=S.colors?.bg||'#0b0e12';      el('#bgPick').value=el('#bgHex').value;
+  el('#fgHex').value=S.colors?.fg||'#eaf7ff';      el('#fgPick').value=el('#fgHex').value;
+  el('#fSide').value=S.colors?.side||'right';
+
+  const st=S.stats||{};
+  ['PV','PE','ATK','DEF','CTR','SUP','SAB','EFF','SLOT'].forEach(k=>el('#p'+k).value=st[k]??0);
+
+  const sty=S.styles||{};
+  el('#abilBorderPick').value=sty.abilBorder?.c||'#7feaff'; el('#abilBorderAlpha').value=sty.abilBorder?.a??0.35;
+  el('#abilBgPick').value=sty.abilBg?.c||'#7feaff';         el('#abilBgAlpha').value=sty.abilBg?.a??0.06;
+  el('#effBorderPick').value=sty.effBorder?.c||'#7feaff';   el('#effBorderAlpha').value=sty.effBorder?.a??0.35;
+  el('#effBgPick').value=sty.effBg?.c||'#7feaff';           el('#effBgAlpha').value=sty.effBg?.a??0.05;
+
+  abilities.innerHTML=''; effects.innerHTML='';
+  (S.abilities||[]).forEach(a=>{ const it=makeItem('ability'); it.querySelector('input[type=text]').value=a.title||''; it.querySelector('input[placeholder*="["]').value=a.tag||''; it.querySelector('.tPick').value=a.tColor||'#7feaff'; it.querySelector('.bPick').value=a.bColor||'#7feaff'; it.querySelector('.bAlpha').value=a.bA??0.35; it.querySelector('.bgPick').value=a.bgColor||'#7feaff'; it.querySelector('.bgAlpha').value=a.bgA??0.06; it.__setHtml(a.html||''); abilities.append(it); });
+  (S.effects||[]).forEach(e=>{ const it=makeItem('effect');  it.querySelector('input[type=text]').value=e.title||''; it.querySelector('input[placeholder*="["]').value=e.tag||''; it.querySelector('.tPick').value=e.tColor||'#7feaff'; it.querySelector('.bPick').value=e.bColor||'#7feaff'; it.querySelector('.bAlpha').value=e.bA??0.35; it.querySelector('.bgPick').value=e.bgColor||'#7feaff'; it.querySelector('.bgAlpha').value=e.bgA??0.05; it.__setHtml(e.html||''); effects.append(it); });
+
+  updatePreview();
+}
+
+/* ========= Genera + autosave ========= */
+function generateCode(){
+  const name=el('#fName').value.trim();
+  if(!name){ alert('Dai un nome al personaggio prima di generare e salvare.'); return; }
+
+  // build HTML
+  const accent=el('#accHex').value.trim()||'#29e5ff';
+  const accentRGBA05 = rgba(accent,.05);
+
+  const P = { PV:el('#pPV').value||'0', PE:el('#pPE').value||'0', ATK:el('#pATK').value||'0',
+              DEF:el('#pDEF').value||'0', CTR:el('#pCTR').value||'0', SUP:el('#pSUP').value||'0',
+              SAB:el('#pSAB').value||'0', EFF:el('#pEFF').value||'0', SLOT:el('#pSLOT').value||'0' };
+
+  const abilitiesData=[...abilities.children].map(n=>n.__getData());
+  const effectsData=[...effects.children].map(n=>n.__getData());
+
+  const avatar=el('#fAvatar').value.trim();
+  const bg=el('#bgHex').value.trim()||'#0b0e12';
+  const fg=el('#fgHex').value.trim()||'#eaf7ff';
+  const side=el('#fSide').value;
+  const klass=el('#fClass').value.trim()||'—';
+
+  const pill=(label,val,accent)=>`<div style="display:inline-block;padding:3px 8px;margin:0 4px 2px 0;font-size:10pt;border:1px solid ${accent};border-radius:999px;background:${rgba(accent,.08)}">${label}: <b style="color:${accent}">${val}</b></div>`;
+  const stat=(label,val)=>`<div style="display:inline-block;padding:3px 8px;margin:0 4px 2px 0;font-size:10pt;border-radius:8px;border:1px solid ${rgba(accent,.35)};background:${rgba(accent,.1)}"><b style="color:${accent}">${label}</b>: ${val}</div>`;
+
+  const abilBlocks = abilitiesData.map(a=>{
+    const tCol=a.tColor||accent, bCol=rgba(a.bColor||el('#abilBorderPick').value, a.bA ?? parseFloat(el('#abilBorderAlpha').value||0.35)), bgCol=rgba(a.bgColor||el('#abilBgPick').value, a.bgA ?? parseFloat(el('#abilBgAlpha').value||0.06));
+    const tag=a.tag? `<span style="opacity:.8;">${a.tag}</span>`:'';
+    const clean=sanitizeInline(a.html);
+    return `<div style="margin:6px 0;padding:10px;border-radius:12px;background:${bgCol};border:1px solid ${bCol};"><div style="font-weight:700;color:${tCol};margin-bottom:4px;">${a.title||'✦ Abilità'}${tag}</div><div>${clean}</div></div>`;
+  }).join('');
+
+  const effBlocks = effectsData.map(e=>{
+    const tCol=e.tColor||accent, bCol=rgba(e.bColor||el('#effBorderPick').value, e.bA ?? parseFloat(el('#effBorderAlpha').value||0.35)), bgCol=rgba(e.bgColor||el('#effBgPick').value, e.bgA ?? parseFloat(el('#effBgAlpha').value||0.05));
+    const tag=e.tag? `<span style="opacity:.8;">${e.tag}</span>`:'';
+    const clean=sanitizeInline(e.html);
+    return `<div style="display:block;margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${bCol};background:${bgCol};"><b style="color:${tCol};">${e.title||'✦ Effetto'}</b>${tag? ' — '+tag:''}<div style="margin-top:6px">${clean}</div></div>`;
+  }).join('');
+
+  const avatarDiv=avatar?`<div style="float:${side};margin:2px 0 0 12px;text-align:right;"><img src="${avatar}" style="width:110px;height:110px;border-radius:50%;border:2px solid ${accent};object-fit:cover;display:block;"></div>`:'';
+
+  const html = `<div style="box-sizing:border-box;background:${bg};color:${fg};border:2px solid ${accent};border-radius:16px;padding:12px;max-width:1200px;margin:0 auto;font:500 10pt 'Courier New',monospace;line-height:1.35;letter-spacing:.1px;">${avatarDiv}<div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div><div style="white-space:normal;margin-bottom:6px;">${pill('Nome',name,accent)}${pill('Classe',klass,accent)}${stat('PV',P.PV)}${stat('PE',P.PE)}${stat('ATK',P.ATK)}${stat('DEF',P.DEF)}${stat('CTR',P.CTR)}${stat('SUP',P.SUP)}${stat('SAB',P.SAB)}${stat('Eff.',P.EFF)}${stat('Slot',P.SLOT)}</div><details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Abilità</summary><div style="margin-top:6px;">${abilBlocks||''}</div></details><details style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Effetti</summary><div style="margin-top:6px;">${effBlocks||''}</div></details><div style="clear:both;"></div></div>`;
+  el('#code').value = minify(html);
+
+  // ---- autosave sullo stesso file
+  const S = sheetFromUI();
+  LIB[S.name] = S; // overwrite/aggiungi
+  refreshSelect();
+  saveJsonToHandle(); // se non hai aperto un file, fa fallback a download
+}
+el('#gen').onclick = generateCode;
+
+el('#copyBtn').onclick = async()=>{
+  try{
+    await navigator.clipboard.writeText(el('#code').value);
+    el('#copied').classList.remove('hidden');
+    setTimeout(()=>el('#copied').classList.add('hidden'),1200);
+  }catch(e){ alert('Copia non riuscita: '+e); }
+};
+
+/* ========= Import semplice ========= */
+function doImport(){
+  const raw=el('#importBox').value.trim();
+  if(!raw) return;
+  const box=document.createElement('div'); box.innerHTML=raw;
+  abilities.innerHTML=''; effects.innerHTML='';
+
+  const t=box.querySelector('div[style*="font-size:14pt"]'); if(t) el('#fName').value=t.textContent.trim();
+  const img=box.querySelector('img'); if(img) el('#fAvatar').value=img.src||'';
+
+  const statRxMap={'PV':'#pPV','PE':'#pPE','ATK':'#pATK','DEF':'#pDEF','CTR':'#pCTR','SUP':'#pSUP','SAB':'#pSAB','Eff.':'#pEFF','Slot':'#pSLOT'};
+  Object.entries(statRxMap).forEach(([k,id])=>{
+    const m=raw.match(new RegExp(`${k}\\s*[:]\\s*(\\d+)`,'i')); if(m) el(id).value=m[1];
+  });
+
+  const det=box.querySelectorAll('details');
+  det.forEach(d=>{
+    const isAb=/abilit/i.test(d.textContent);
+    const cards=[...d.querySelectorAll('div')].filter(x=>x.querySelector('div[style*="font-weight"]')||x.querySelector('b'));
+    cards.forEach(c=>{
+      const head=c.querySelector('div[style*="font-weight"]')||c.querySelector('b');
+      const body=c.cloneNode(true); if(head) body.removeChild(head);
+      const it=makeItem(isAb?'ability':'effect');
+      it.querySelector('input[type=text]').value=head?(head.textContent.trim()):'✦';
+      it.__setHtml(body.innerHTML);
+      (isAb?abilities:effects).append(it);
+    });
+  });
+  updatePreview();
+}
+el('#doImport').onclick = doImport;
+
+/* ========= Libreria ========= */
+let LIB = {}; // { "NomePersonaggio": { sheet } }
+function refreshSelect(){
+  const sel = el('#libSelect');
+  const names = Object.keys(LIB).sort((a,b)=>a.localeCompare(b,'it'));
+  sel.innerHTML = names.map(n=>`<option value="${n}">${n}</option>`).join('') || `<option value="">(vuoto)</option>`;
+}
+
+el('#btnSaveToLib').onclick = ()=>{
+  const S = sheetFromUI();
+  if(!S.name){ alert('Dai un nome al personaggio prima di salvare.'); return; }
+  LIB[S.name] = S;
+  refreshSelect();
+  saveJsonToHandle();
+  alert('Scheda salvata nella libreria con chiave: ' + S.name);
+};
+
+el('#btnOpenFromLib').onclick = ()=>{
+  const k = el('#libSelect').value;
+  if(!k || !LIB[k]){ alert('Seleziona una scheda valida.'); return; }
+  uiFromSheet(LIB[k]);
+};
+
+el('#btnDeleteFromLib').onclick = ()=>{
+  const k = el('#libSelect').value;
+  if(!k || !LIB[k]){ alert('Nessuna scheda selezionata.'); return; }
+  if(confirm('Eliminare "'+k+'" dalla libreria?')){
+    delete LIB[k];
+    refreshSelect();
+    saveJsonToHandle();
+  }
+};
+
+el('#btnNew').onclick = ()=>{
+  uiFromSheet({
+    name:'', class:'', avatar:'',
+    colors:{accent:'#29e5ff',bg:'#0b0e12',fg:'#eaf7ff',side:'right'},
+    stats:{PV:0,PE:0,ATK:0,DEF:0,CTR:0,SUP:0,SAB:0,EFF:0,SLOT:0},
+    styles:{abilBorder:{c:'#7feaff',a:.35},abilBg:{c:'#7feaff',a:.06},effBorder:{c:'#7feaff',a:.35},effBg:{c:'#7feaff',a:.05}},
+    abilities:[], effects:[]
+  });
+};
+
+/* ========= File System Access API ========= */
+let fileHandle = null;
+
+async function openJsonWithFS(){
+  try{
+    if(!('showOpenFilePicker' in window)) throw new Error('File System Access API non supportato. Verrà usato il download come fallback.');
+    const [handle] = await window.showOpenFilePicker({
+      types:[{ description:'JSON', accept:{ 'application/json':['.json'] } }]
+    });
+    const file = await handle.getFile();
+    const text = await file.text();
+    const obj = JSON.parse(text);
+    if(typeof obj!=='object' || Array.isArray(obj)) throw new Error('Formato JSON non valido.');
+    fileHandle = handle;
+    LIB = obj;
+    refreshSelect();
+    alert('File JSON aperto. Seleziona una scheda e premi "Apri".');
+  }catch(err){
+    alert(err.message || 'Errore apertura file.');
+  }
+}
+
+async function saveJsonToHandle(){
+  try{
+    const data = JSON.stringify(LIB,null,2);
+    if(fileHandle && 'createWritable' in fileHandle){
+      const writable = await fileHandle.createWritable();
+      await writable.write(data);
+      await writable.close();
+    }else{
+      // fallback: scarica il file
+      const blob = new Blob([data],{type:'application/json'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href=url; a.download='schede_gdr.json'; a.click();
+      URL.revokeObjectURL(url);
+    }
+  }catch(err){
+    alert('Errore salvataggio: ' + err.message);
+  }
+}
+
+el('#btnOpenFS').onclick = openJsonWithFS;
+el('#btnSaveFS').onclick = saveJsonToHandle;
+
+/* ========= Seed iniziale: "Kuzan" ========= */
+LIB = {
+  "Kuzan": {
+    "name":"Kuzan",
+    "class":"Sabotaggio",
+    "avatar":"https://i.pinimg.com/736x/d5/c0/f9/d5c0f9b8019f3bb6a1d9e2624acff8d5.jpg",
+    "colors":{"accent":"#29e5ff","bg":"#0b0e12","fg":"#eaf7ff","side":"right"},
+    "stats":{"PV":1000,"PE":2250,"ATK":500,"DEF":500,"CTR":500,"SUP":1250,"SAB":2500,"EFF":250,"SLOT":1},
+    "styles":{"abilBorder":{"c":"#3ec3ed","a":0.4},"abilBg":{"c":"#3ec3ed","a":0.07},"effBorder":{"c":"#3ec3ed","a":0.4},"effBg":{"c":"#3ec3ed","a":0.07}},
+    "abilities":[
+      {
+        "type":"ability",
+        "title":"✦ Hie Hie no Mi – Gelo del Sabotaggio",
+        "tag":"[x3]",
+        "tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,
+        "html":normalizeForQuill(`Il possessore del <b>Hie Hie no Mi</b> plasma il ghiaccio direttamente dal proprio valore di <b>Sabotaggio</b>, permeando ogni colpo e manovra con un gelo che si insinua sia esternamente che internamente nei parametri avversari colpiti.
+<i style="color:#3ec3ed;">Ogni azione genera passivamente Sabotaggio nei parametri avversari coinvolti nel contrasto, congelandoli e rendendoli temporaneamente inattivi. Per spezzare questa morsa glaciale, l’avversario è costretto a consumare attivamente i propri Punti Supporto, sottraendoli alle azioni di contrasto per infrangere il gelo. Fanno eccezione solo coloro dotati di una vera immunità al ghiaccio. Finché la compensazione non avviene, i parametri colpiti restano bloccati, riducendo drasticamente l’efficacia delle tecniche e trasformando ogni scontro contro il gelo in una lotta contro il tempo e l’esaurimento.</i>
+Inoltre, abbassando costantemente la temperatura ambientale e corporea dell’avversario, ogni PE perso riduce progressivamente la sua Resistenza. Ogni volta che si consuma il 25% dei PE iniziali, le difese si abbassano ulteriormente e l’avversario subisce una progressione di effetti da ghiaccio, attivando automaticamente gli effetti di tipo Sabotaggio: <i style="color:#3ec3ed;">Intorpidimento</i> → <i style="color:#3ec3ed;">Ipotermia</i> → <i style="color:#3ec3ed;">Necrosi</i>.`)
+      },
+      {
+        "type":"ability",
+        "title":"✦ Busōshoku no Haki – Ambizione Corazzata",
+        "tag":"[x3]",
+        "tColor":"purple","bColor":"purple","bA":0.5,"bgColor":"purple","bgA":0.10,
+        "html":normalizeForQuill(`Kuzan <b style="color:purple;">Busōshoku no Haki</b> infonde e <i style="color:purple;">plasma nuovi parametri reali basandosi sul proprio valore di <b>Supporto</b></i>, trasformando la volontà in forza tangibile e barriera inviolabile.
+<i style="color:purple;">Questa tecnica consente un’applicazione avanzata dell’Ambizione, permettendo di annichilire i poteri dei Frutti del Diavolo: aumentando il costo in PE(x2), il Busōshoku no Haki può bloccare e neutralizzare anche gli effetti più devastanti, come dimostrato nel caso dei terremoti del possessore del Gura Gura no Mi.</i>
+<i style="color:purple;">Ma il vero apice risiede nel dominio avanzato dell’Ambizione: Kuzan espande la carica base delle proprie azioni, saturandole con la sua forza di volontà. In questo stato, ogni tecnica si attiva con la quantità esatta e necessaria di energia, ignorando condizioni, limiti o conseguenze. È l’Ambizione che detta la legge – e Kuzan ne è il braccio esecutore.</i>`)
+      },
+      {
+        "type":"ability",
+        "title":"✦ Kenbun Shoku – Istinto Precognitivo",
+        "tag":"[x2]",
+        "tColor":"#ffffff","bColor":"#ffffff","bA":0.3,"bgColor":"#ffffff","bgA":0.07,
+        "html":normalizeForQuill(`L’utilizzatore affina i sensi a tal punto da percepire e prevedere ogni intenzione, pensiero e movimento dell’avversario, agendo sempre un istante prima che il nemico possa reagire.
+<i style="color:#ffffff;">In attacco, le tecniche ottengono lo status <b>Anti-Contrattacco</b>. In difesa, consente di applicare i propri effetti prima del contrasto. [x2]</i>`)
+      }
+    ],
+    "effects":[
+      {"type":"effect","title":"✦ Frantumazione Glaciale","tag":"[SUP - Indotto]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Combinando il potere dell’intangibilità Rogia con il gelo assoluto, l’utilizzatore si libera da ogni vincolo o status, dissolvendosi in frammenti di ghiaccio che sfuggono a ogni costrizione. <i style="color:#3ec3ed;">L’utilizzatore sfrutta l’intangibilità per trasformare le condizioni negative subite in pura brina, frantumandole e annullandole all’istante.</i>`)},
+      {"type":"effect","title":"✦ Fuga Eterea – Intangibilità Rogia","tag":"[SUP - Indotto]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Quando l’intangibilità del Rogia si fonde con l’Ambizione, l’utilizzatore acquisisce il potere di dissolversi e ricomporsi all’istante. <i style="color:#3ec3ed;">Questa abilità permette di rinunciare allo slot effetto per convertire l’intero valore SUP in un PV temporaneo, protetto dall’intangibilità durante la propria azione. <span style="color:red;">Applicando questo fattore, Aokiji è costretto ad annullare sia il potenziamento che l’utilizzo dei SUP tramite l’Haki dell’Armatura.</span></i>`)},
+      {"type":"effect","title":"✦ Dominio Gelido – Manipolazione Ambientale","tag":"[SUP - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Quando l’utilizzatore manipola il ghiaccio, l’ambiente circostante viene trasformato e saturato dal suo potere. <i style="color:#3ec3ed;">Il 50% dei PE spesi rimane nell’ambiente e può essere riutilizzato in azioni successive legate al ghiaccio.</i>`)},
+      {"type":"effect","title":"✦ Morfogenesi Glaciale","tag":"[SUP - Indotto]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Modella il ghiaccio creando costrutti proporzionali al SUP. <i style="color:#3ec3ed;">Per ogni carica di PE spesa, genera costrutti riutilizzabili e adattivi. [50PE : 25% SUP]</i>`)},
+      {"type":"effect","title":"✦ Intorpidimento","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Il freddo rallenta ogni impulso vitale. <i style="color:#3ec3ed;">L’efficacia dell’energia e della carica PE si riduce del 50%.</i>`)},
+      {"type":"effect","title":"✦ Ipotermia","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`La temperatura crolla oltre i limiti. <i style="color:#3ec3ed;">L’avversario deve spendere il doppio dei PE previsti o tutti i parametri si riducono in base a SAB.</i>`)},
+      {"type":"effect","title":"✦ Necrosi","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Il gelo distrugge i tessuti. <i style="color:#3ec3ed;">Il costo minimo di attivazione viene pagato in PV.</i>`)},
+      {"type":"effect","title":"✦ Prigione di Gelo – Sfere Congelanti","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Raffica di sfere che avvolgono l’avversario in cristalli. <i style="color:#3ec3ed;">Congela e annienta il PE residuo in contrasto, infliggendo danni reali.</i>`)},
+      {"type":"effect","title":"✦ Visione Precognitiva – Schivata Perfetta","tag":"[DEF - Evasione]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Anticipa l’azione nemica e la schiva applicando le giuste contromisure. <i style="color:#3ec3ed;">Evita lo slot effetto e le penalità collegate.</i>`)},
+      {"type":"effect","title":"✦ Oblio Gelido","tag":"[ATK - Raggio]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Congela un fattore attivo in scheda finché il bersaglio non sacrifica un’azione (pagando comunque i PE) per spezzare il ghiaccio.`)}
+    ]
+  }
+};
+refreshSelect();
+uiFromSheet(LIB["Kuzan"]);
+</script>
+
+</body>
+</html>

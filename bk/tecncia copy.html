@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tecnica singola → Stile + Valori + Galleria GIF + Librerie JSON</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css">
+  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+  <style>
+    :root {
+      color-scheme: dark
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      background: #0a0f14;
+      color: #eaf7ff;
+      font: 500 14px/1.5 Inter, Segoe UI, Roboto, Arial, sans-serif
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 24px auto;
+      padding: 0 16px
+    }
+
+    .grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: 460px 1fr
+    }
+
+    .card {
+      background: #0f1620;
+      border: 1px solid #1f2a3a;
+      border-radius: 14px;
+      padding: 12px
+    }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    label {
+      font-size: 12px;
+      opacity: .9
+    }
+
+    input[type="text"],
+    input[type="url"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid #2b3a4f;
+      background: #0e1a25;
+      color: #eaf7ff;
+      outline: none
+    }
+
+    input[type="color"] {
+      appearance: none;
+      border: none;
+      background: transparent;
+      width: 36px;
+      height: 32px;
+      padding: 0;
+      border-radius: 8px
+    }
+
+    .btn {
+      border: 1px solid #2b3647;
+      background: #132034;
+      color: #eaf7ff;
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer
+    }
+
+    .btn:hover {
+      background: #1a2a42
+    }
+
+    .danger {
+      background: #2a1b1b;
+      border-color: #592a2a
+    }
+
+    .preview {
+      background: #07101a;
+      border: 1px solid #142235;
+      border-radius: 16px;
+      padding: 14px;
+      min-height: 200px
+    }
+
+    textarea.code {
+      width: 100%;
+      min-height: 160px;
+      border-radius: 10px;
+      border: 1px solid #203047;
+      background: #0b1520;
+      color: #cfeaff;
+      padding: 10px;
+      white-space: pre;
+      overflow: auto
+    }
+
+    /* Quill */
+    .qwrap {
+      background: #0b1620;
+      border: 1px solid #2b3a4f;
+      border-radius: 8px;
+      margin-top: 6px;
+      margin-bottom: 10px
+    }
+
+    .qwrap .ql-toolbar.ql-snow {
+      border: none;
+      border-bottom: 1px solid #2b3a4f;
+      border-radius: 8px 8px 0 0;
+      background: #0e1c2a
+    }
+
+    .qwrap .ql-container.ql-snow {
+      border: none;
+      border-radius: 0 0 8px 8px;
+      background: #0b1620
+    }
+
+    .qwrap .ql-editor {
+      min-height: 120px
+    }
+
+    /* ⚠️ rimosso: .qwrap .ql-editor *{color:inherit} per non sovrascrivere i colori inline */
+    .hide {
+      display: none
+    }
+
+    @media (max-width:980px) {
+      .grid {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Modali */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 9999
+    }
+
+    .modal.open {
+      display: flex
+    }
+
+    .modal-card {
+      background: #0f1620;
+      border: 1px solid #1f2a3a;
+      border-radius: 14px;
+      max-width: 980px;
+      width: 100%;
+      max-height: 88vh;
+      overflow: auto;
+      padding: 12px
+    }
+
+    .modal-head {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: #0f1620;
+      padding: 6px 0;
+      border-bottom: 1px solid #1f2a3a;
+      z-index: 1
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid #2b3a4f;
+      background: #132034;
+      font-size: 12px
+    }
+
+    /* Galleria GIF */
+    .gal-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center
+    }
+
+    .gal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 10px;
+      margin-top: 10px
+    }
+
+    .thumb {
+      background: #0b1520;
+      border: 1px solid #203047;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform .15s ease, box-shadow .15s ease
+    }
+
+    .thumb:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, .35)
+    }
+
+    .thumb img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      display: block
+    }
+
+    .thumb .url {
+      font-size: 11px;
+      padding: 6px 8px;
+      color: #cfeaff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      border-top: 1px solid #203047
+    }
+
+    /* Picker abilità/effetti */
+    .pick-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px
+    }
+
+    .pick-col h3 {
+      margin: 6px 0 0;
+      font: 700 14px/1 Inter;
+      color: #cfeaff
+    }
+
+    .pick-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 10px;
+      margin-top: 8px
+    }
+
+    .pick-item {
+      background: #0b1520;
+      border: 1px solid #203047;
+      border-radius: 10px;
+      padding: 10px
+    }
+
+    .pick-title {
+      font-weight: 700;
+      margin-bottom: 4px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px">
+      <label class="btn" style="position:relative"><input id="openLibJson" type="file" accept="application/json"
+          style="position:absolute;inset:0;opacity:0">Apri JSON Schede…</label>
+      <button class="btn" id="saveLibJson">Salva JSON Schede</button>
+      <label class="btn" style="position:relative"><input id="openGifJson" type="file" accept="application/json"
+          style="position:absolute;inset:0;opacity:0">Apri JSON GIF…</label>
+      <button class="btn" id="saveGifJson">Salva JSON GIF</button>
+      <a href="tabella.html" class="px-3 py-2 rounded-lg bg-[#142235] border border-[#2b3647]"> <button
+          class="btn">Scheda</button>
+      </a>
+
+    </div>
+
+    <h1 style="margin:0 0 10px;font-size:22px;text-align:center">Editor <b>UNA Tecnica</b> – stile “glow”, valori,
+      librerie JSON</h1>
+
+    <div class="card" style="margin-bottom:10px">
+      <div class="row">
+        <div style="flex:1;min-width:200px">
+          <label>Personaggio (da libreria schede)</label>
+          <select id="charSelect"></select>
+        </div>
+        <button class="btn" id="btnLoadChar">Carica Abilità/Effetti…</button>
+        <div style="flex:1;min-width:220px">
+          <label>GIF: filtro per personaggio</label>
+          <select id="gifCharFilter"></select>
+        </div>
+        <button class="btn" id="openGallery" type="button">Apri galleria GIF</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Impostazioni intestazione</div>
+        <div class="row">
+          <div style="flex:1;min-width:200px"><label>Nome personaggio (opz.)</label><input id="charName" type="text"
+              placeholder="Es. Kuzan"></div>
+          <div style="flex:1;min-width:200px;display:flex;align-items:center;gap:8px">
+            <input id="accent" type="color" value="#7feaff">
+            <div><label>Colore accento</label></div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:200px">
+            <label>Tipo</label>
+            <select id="tType">
+              <option>Supporto</option>
+              <option selected>Attacco</option>
+              <option>Difesa</option>
+              <option>Sabotaggio</option>
+              <option>Contrattacco</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:200px;display:flex;align-items:center;gap:8px">
+            <input id="tColor" type="color" value="#7feaff">
+            <div><label>Colore titolo</label></div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Titolo sezione</label><input id="tTitle" type="text" placeholder="Moveset"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>GIF/Immagine intestazione (URL)</label><input id="tImg" type="url"
+              placeholder="https://...gif"></div>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Contenuti</div>
+        <div class="row">
+          <div style="flex:1"><label>Titolo blocco 1</label><input id="b1Title" type="text" value="Effetti"></div>
+        </div>
+        <div class="qwrap">
+          <div id="b1"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Titolo blocco 2</label><input id="b2Title" type="text" value="Abilità in Combo">
+          </div>
+        </div>
+        <div class="qwrap">
+          <div id="b2"></div>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Riga finale</div>
+        <div class="row">
+          <div style="flex:1"><label>Consumo</label><input id="consume" type="text" placeholder="es. 50 PE"></div>
+        </div>
+        <div class="row" id="rowDanno">
+          <div style="flex:1"><label>Valore <b>Danno</b> (Attacco/Contrattacco)</label><input id="valDanno" type="text"
+              placeholder="es. 600"></div>
+        </div>
+        <div class="row" id="rowDifesa">
+          <div style="flex:1"><label>Valore <b>Difesa</b> (Difesa/Contrattacco)</label><input id="valDifesa" type="text"
+              placeholder="es. 500"></div>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Colori blocchi</div>
+        <div class="row">
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="blk1Color" type="color" value="#0c1620"><label>Blocco scuro A</label>
+            <input id="blk1Alpha" type="range" min="0" max="1" step="0.01" value="0.60"><span id="a1"
+              style="opacity:.7">0.60</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="blk2Color" type="color" value="#14283c"><label>Blocco scuro B</label>
+            <input id="blk2Alpha" type="range" min="0" max="1" step="0.01" value="0.65"><span id="a2"
+              style="opacity:.7">0.65</span>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="gen">Rigenera</button>
+          <button class="btn" id="copy">Copia</button>
+          <button class="btn danger" id="clear">Pulisci</button>
+          <span id="copied" style="display:none;opacity:.8">Copiato ✅</span>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Codice (una riga)</div>
+        <textarea id="code" class="code" readonly></textarea>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Anteprima</div>
+        <div id="preview" class="preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE GALLERIA GIF -->
+  <div id="galleryModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="gal-controls">
+          <span class="pill">Galleria GIF</span>
+          <select id="galPersonSelect" title="Personaggio"></select>
+          <input id="filterInput" type="text" placeholder="Filtro testo URL"
+            style="padding:6px 10px;border-radius:10px;border:1px solid #2b3a4f;background:#0e1a25;color:#eaf7ff;min-width:220px">
+          <input id="addUrlInput" type="url" placeholder="Aggiungi URL singolo"
+            style="padding:6px 10px;border-radius:10px;border:1px solid #2b3a4f;background:#0e1a25;color:#eaf7ff;min-width:240px">
+          <button class="btn" id="addUrlBtn" type="button">Aggiungi</button>
+          <button class="btn" id="bulkBtn" type="button">Importa blocco link…</button>
+        </div>
+        <button class="btn" id="closeGallery" type="button">Chiudi</button>
+      </div>
+      <div id="galleryGrid" class="gal-grid"></div>
+    </div>
+  </div>
+
+  <!-- MODALE PICKER -->
+  <div id="pickModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <span class="pill">Import da scheda</span>
+          <span id="pickCaption" class="muted" style="opacity:.8;margin-left:8px"></span>
+        </div>
+        <div class="row">
+          <button class="btn" id="insB1">Inserisci in Blocco 1</button>
+          <button class="btn" id="insB2">Inserisci in Blocco 2</button>
+          <button class="btn" id="closePick">Chiudi</button>
+        </div>
+      </div>
+      <div class="pick-cols">
+        <div class="pick-col">
+          <h3>Abilità</h3>
+          <div id="pickListAb" class="pick-list"></div>
+        </div>
+        <div class="pick-col">
+          <h3>Effetti</h3>
+          <div id="pickListEf" class="pick-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== helpers ===== */
+    const el = s => document.querySelector(s);
+    const minify = s => s.replace(/\n+/g, '').replace(/\s{2,}/g, ' ').replace(/> </g, '><').trim();
+    const hexToRgb = h => { let c = (h || '').replace('#', ''); if (c.length === 3) c = c.split('').map(x => x + x).join(''); const n = parseInt(c || '000000', 16); return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }; };
+    const rgba = (hex, a) => { const { r, g, b } = hexToRgb(hex); return `rgba(${r}, ${g}, ${b}, ${a})`; };
+    /* keep inline color/background/font-weight/decoration/align */
+    const sanitizeInline = html => {
+      const t = document.createElement('div'); t.innerHTML = html || ''; const ok = new Set(['DIV', 'B', 'I', 'U', 'SPAN', 'BR', 'A', 'IMG', 'P', 'UL', 'OL', 'LI']);
+      const walk = n => {
+        [...n.childNodes].forEach(ch => {
+          if (ch.nodeType === 1) {
+            if (!ok.has(ch.tagName)) { ch.replaceWith(...ch.childNodes); return; }
+            [...ch.attributes].forEach(a => {
+              const k = a.name.toLowerCase();
+              if (k.startsWith('on')) ch.removeAttribute(a.name);
+              if (k === 'style') {
+                const safe = []; (a.value || '').split(';').forEach(r => {
+                  const [p, v] = (r || '').split(':').map(x => x && x.trim());
+                  const allow = ['color', 'background-color', 'font-weight', 'text-decoration', 'text-decoration-line', 'text-align'].includes((p || '').toLowerCase());
+                  if (allow && v) safe.push(p + ':' + v);
+                }); ch.setAttribute('style', safe.join(';'));
+              }
+              if (ch.tagName === 'A' && k === 'href' && !/^https?:/i.test(a.value)) ch.removeAttribute('href');
+              if (ch.tagName === 'IMG' && !['src', 'alt', 'title', 'style'].includes(a.name)) ch.removeAttribute(a.name);
+            }); walk(ch);
+          }
+        }); return n.innerHTML;
+      }; return walk(t);
+    };
+
+    /* === FIX 1: abilita attributors stile per colori/sfondo in Quill === */
+    const ColorStyle = Quill.import('attributors/style/color');
+    const BackgroundStyle = Quill.import('attributors/style/background');
+    Quill.register(ColorStyle, true);
+    Quill.register(BackgroundStyle, true);
+
+    /* ===== editor ===== */
+    const q1 = new Quill('#b1', { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'underline'], [{ color: [] }, { background: [] }], [{ list: 'ordered' }, { list: 'bullet' }], [{ 'align': [] }], ['link', 'clean']] } });
+    const q2 = new Quill('#b2', { theme: 'snow', modules: { toolbar: [['bold', 'italic', 'underline'], [{ color: [] }, { background: [] }], [{ list: 'ordered' }, { list: 'bullet' }], [{ 'align': [] }], ['link', 'clean']] } });
+    [q1, q2].forEach(q => q.on('text-change', update));
+
+    function toggleValueInputs() {
+      const t = el('#tType').value;
+      const showDanno = (t === 'Attacco' || t === 'Contrattacco');
+      const showDifesa = (t === 'Difesa' || t === 'Contrattacco');
+      el('#rowDanno').classList.toggle('hide', !showDanno);
+      el('#rowDifesa').classList.toggle('hide', !showDifesa);
+    }
+    el('#tType').addEventListener('change', () => { toggleValueInputs(); update(); });
+
+    /* ===== Librerie ===== */
+    let LIB = {};  // schede
+    let GIF_LIB = {
+      "Kuzan": [
+        "https://i.imgur.com/G3uwp83.gif", "https://i.imgur.com/jf7WUR6.gif", "https://i.imgur.com/GiX3nSA.gif", "https://i.imgur.com/bhVfvsC.gif", "https://i.imgur.com/Bjlt5AO.gif", "https://i.imgur.com/oywRsuC.gif", "https://i.imgur.com/2YZgANy.gif", "https://i.imgur.com/TiTNoV7.gif", "https://i.imgur.com/t3UOESs.gif", "https://i.imgur.com/9v9OhNg.gif", "https://i.imgur.com/zbn8tR5.gif", "https://i.imgur.com/owr0f70.gif", "https://i.imgur.com/TID3IsR.gif", "https://i.imgur.com/whK8H2J.gif", "https://i.imgur.com/oCpaSm7.gif", "https://i.imgur.com/qzb6Fsv.gif", "https://i.imgur.com/dX506ux.gif", "https://i.imgur.com/cGlTgCD.gif", "https://i.imgur.com/Ex3EaV1.gif", "https://i.imgur.com/7X4U4Kz.gif", "https://i.imgur.com/Szty9Jp.gif", "https://i.imgur.com/P8yDE1a.gif", "https://i.imgur.com/MT5Mcz9.gif", "https://i.imgur.com/fbkmNif.gif", "https://i.imgur.com/GQdOPan.gif", "https://i.imgur.com/16Je64G.gif", "https://i.imgur.com/Uu0MSdI.gif", "https://i.imgur.com/xBLXqyk.gif", "https://i.imgur.com/ScLkoLv.gif", "https://i.imgur.com/O66JZkS.gif", "https://i.imgur.com/S6MdlrA.gif", "https://i.imgur.com/1ZkPywZ.gif", "https://i.imgur.com/DPHjwRG.gif", "https://i.imgur.com/byMNFuJ.gif", "https://i.imgur.com/LbvKIr4.gif", "https://i.imgur.com/oOEr7Zs.gif", "https://i.imgur.com/2f1kSyw.gif", "https://i.imgur.com/SxCfosi.gif", "https://i.imgur.com/1kw6YVv.gif", "https://i.imgur.com/g40ERis.gif", "https://i.imgur.com/70bGQE5.gif", "https://i.imgur.com/kZm4s4i.gif", "https://i.imgur.com/PWcEcsm.gif", "https://i.imgur.com/GCYNxzA.gif", "https://i.imgur.com/JF9v8vx.gif", "https://i.imgur.com/ASwnWDk.gif", "https://i.imgur.com/jA4XbD7.gif", "https://i.imgur.com/rpW9CiZ.gif", "https://i.imgur.com/T2D69Md.gif", "https://i.imgur.com/PApq7iq.gif", "https://i.imgur.com/zDE793S.gif", "https://i.imgur.com/DIshCuv.gif", "https://i.imgur.com/c0gjDQ0.gif", "https://i.imgur.com/hXqIVkU.gif", "https://i.imgur.com/kxKZXT6.gif",
+        "https://upload.forumfree.net/i/ff7318396/hachinosu-garp.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-animated-gifs-one-piece.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-aokiji.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-egghead%201-17485536508907.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-egghead-17485536707878.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-egghead-arc%201.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-egghead-arc%202.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-egghead-arc.gif", "https://upload.forumfree.net/i/ff7318396/one-piece-one-piece-anime.gif"
+      ],
+      "Kuzan 2": []
+    };
+
+    function refreshCharSelects() {
+      const names = Object.keys(LIB).sort((a, b) => a.localeCompare(b, 'it'));
+      el('#charSelect').innerHTML = names.length ? names.map(n => `<option value="${n}">${n}</option>`).join('') : `<option value="">(nessuno)</option>`;
+      const allGifNames = ['(tutte)', ...Object.keys(GIF_LIB).sort((a, b) => a.localeCompare(b, 'it'))];
+      el('#gifCharFilter').innerHTML = allGifNames.map(n => `<option value="${n}">${n}</option>`).join('');
+      el('#galPersonSelect').innerHTML = Object.keys(GIF_LIB).length ? Object.keys(GIF_LIB).sort((a, b) => a.localeCompare(b, 'it')).map(n => `<option value="${n}">${n}</option>`).join('') : `<option value="">(nessuno)</option>`;
+    }
+    function openLibFile(input, assign) {
+      input.addEventListener('change', async e => {
+        const f = e.target.files?.[0]; if (!f) return;
+        try {
+          const obj = JSON.parse(await f.text());
+          assign(obj || {});
+          refreshCharSelects();
+          const first = Object.keys(LIB)[0] || '';
+          if (first) { el('#charSelect').value = first; el('#charName').value = first; }
+          alert('File JSON caricato.');
+        } catch (err) { alert('Errore JSON: ' + err.message); }
+        e.target.value = '';
+      });
+    }
+    openLibFile(el('#openLibJson'), obj => { LIB = obj; });
+    openLibFile(el('#openGifJson'), obj => { GIF_LIB = obj; });
+
+    function saveAsFile(obj, name) {
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob); const a = document.createElement('a');
+      a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url);
+    }
+    el('#saveLibJson').onclick = () => saveAsFile(LIB, 'schede_gdr.json');
+    el('#saveGifJson').onclick = () => saveAsFile(GIF_LIB, 'gif_libreria.json');
+
+    /* ===== Picker Abilità/Effetti ===== */
+    function mkPickCard(obj, accentFromSheet, type) {
+      const color = obj.tColor || accentFromSheet || '#7feaff';
+      const title = (obj.title || '').trim();
+      return `
+  <div class="pick-item">
+    <label class="row" style="justify-content:space-between;align-items:flex-start">
+      <span class="pick-title" style="color:${color}">${title}${obj.tag ? ` <span style="opacity:.8">${obj.tag}</span>` : ''}</span>
+      <input type="checkbox" class="pickCheck" data-type="${type}"
+        data-title="${encodeURIComponent(title)}"
+        data-tag="${encodeURIComponent(obj.tag || '')}"
+        data-color="${encodeURIComponent(color)}"
+        data-html="${encodeURIComponent(obj.html || '')}">
+    </label>
+    <div style="margin-top:6px;font-size:12px;">${sanitizeInline(obj.html || '')}</div>
+  </div>`;
+    }
+    function renderPickLists(S) {
+      const ab = el('#pickListAb'), ef = el('#pickListEf'); ab.innerHTML = ''; ef.innerHTML = '';
+      (S.abilities || []).forEach(a => ab.insertAdjacentHTML('beforeend', mkPickCard(a, S.colors?.accent, 'ability')));
+      (S.effects || []).forEach(e => ef.insertAdjacentHTML('beforeend', mkPickCard(e, S.colors?.accent, 'effect')));
+    }
+    function openPick() {
+      const k = el('#charSelect').value;
+      if (!k || !LIB[k]) { alert('Seleziona un personaggio valido nella libreria schede.'); return; }
+      const S = LIB[k];
+      renderPickLists(S);
+      el('#pickCaption').textContent = `Da: ${k} — seleziona più voci e inserisci in uno dei blocchi`;
+      el('#pickModal').classList.add('open'); el('#pickModal').setAttribute('aria-hidden', 'false');
+    }
+    function closePick() { el('#pickModal').classList.remove('open'); el('#pickModal').setAttribute('aria-hidden', 'true'); }
+    el('#btnLoadChar').onclick = openPick; el('#closePick').onclick = closePick; el('#pickModal').addEventListener('click', e => { if (e.target === el('#pickModal')) closePick(); });
+
+    /* === FIX 2: inserimento che preserva SEMPRE i colori del titolo e del corpo === */
+    function stripLeadStar(s) { return (s || '').replace(/^\s*[✦*]+\s*/, ''); }
+    function applyPicked(toEditor) {
+      const checks = [...document.querySelectorAll('.pickCheck:checked')];
+      if (!checks.length) { alert('Seleziona almeno una voce.'); return; }
+      let html = '';
+      checks.forEach(ch => {
+        const title = stripLeadStar(decodeURIComponent(ch.dataset.title || ''));
+        const tag = decodeURIComponent(ch.dataset.tag || '');
+        const color = decodeURIComponent(ch.dataset.color || '#7feaff');
+        const body = decodeURIComponent(ch.dataset.html || '');
+        html += `<p><span style="font-weight:700;color:${color}">${title}</span>${tag ? ` <span style="opacity:.8">${tag}</span>` : ''}</p>`;
+        html += sanitizeInline(body) || '<p>• N/A</p>';
+      });
+      toEditor.clipboard.dangerouslyPasteHTML(toEditor.getLength() - 1, html);
+      closePick();
+    }
+    el('#insB1').onclick = () => applyPicked(q1);
+    el('#insB2').onclick = () => applyPicked(q2);
+
+    /* ===== GALLERIA GIF su JSON ===== */
+    function openGallery() {
+      refreshCharSelects();
+      const preSel = el('#gifCharFilter').value;
+      const choose = preSel && preSel !== '(tutte)' ? preSel : (Object.keys(GIF_LIB)[0] || '');
+      el('#galPersonSelect').value = choose;
+      renderGallery();
+      el('#galleryModal').classList.add('open'); el('#galleryModal').setAttribute('aria-hidden', 'false');
+    }
+    function closeGallery() { el('#galleryModal').classList.remove('open'); el('#galleryModal').setAttribute('aria-hidden', 'true'); }
+    el('#openGallery').addEventListener('click', openGallery);
+    el('#closeGallery').addEventListener('click', closeGallery);
+    el('#galleryModal').addEventListener('click', e => { if (e.target === el('#galleryModal')) closeGallery(); });
+
+    function renderGallery() {
+      const grid = el('#galleryGrid'); grid.innerHTML = '';
+      const who = el('#galPersonSelect').value;
+      const term = (el('#filterInput').value || '').trim().toLowerCase();
+      const list = (who && GIF_LIB[who]) ? GIF_LIB[who] : [];
+      list.filter(u => !term || u.toLowerCase().includes(term)).forEach(url => {
+        const card = document.createElement('div'); card.className = 'thumb';
+        card.innerHTML = `<img loading="lazy" src="${url}"><div class="url">${url}</div>`;
+        card.onclick = () => { el('#tImg').value = url; closeGallery(); update(); };
+        grid.appendChild(card);
+      });
+    }
+    el('#galPersonSelect').addEventListener('change', renderGallery);
+    el('#filterInput').addEventListener('input', renderGallery);
+
+    function ensureGifBucket(name) { if (!name) return; if (!GIF_LIB[name]) GIF_LIB[name] = []; }
+    el('#addUrlBtn').addEventListener('click', () => {
+      const who = el('#galPersonSelect').value || prompt('Associa a quale personaggio?');
+      const u = (el('#addUrlInput').value || '').trim();
+      if (!who || !u) return;
+      if (!/^https?:\/\/.+\.(gif|png|jpg|jpeg|webp)(\?.*)?$/i.test(u)) { alert('URL immagine non valido'); return; }
+      ensureGifBucket(who);
+      if (!GIF_LIB[who].includes(u)) GIF_LIB[who].push(u);
+      el('#addUrlInput').value = ''; renderGallery(); refreshCharSelects();
+    });
+    el('#bulkBtn').addEventListener('click', () => {
+      const who = prompt('Nome personaggio per associare il blocco:', el('#galPersonSelect').value || '');
+      if (!who) return;
+      const txt = prompt('Incolla qui il blocco di link (uno per riga o incollati da HTML/QUOTE):');
+      if (!txt) return;
+      const urls = Array.from(new Set((txt.match(/https?:\/\/[^\s"'\]]+\.(?:gif|png|jpg|jpeg|webp)(?:\?[^\s"'\\\]]*)?/gi) || [])));
+      if (!urls.length) { alert('Nessuna immagine trovata.'); return; }
+      ensureGifBucket(who);
+      urls.forEach(u => { if (!GIF_LIB[who].includes(u)) GIF_LIB[who].push(u); });
+      alert(`Importate ${urls.length} immagini per ${who}.`);
+      refreshCharSelects(); el('#galPersonSelect').value = who; renderGallery();
+    });
+
+    /* ===== build output ===== */
+    ['#charName', '#accent', '#tImg', '#tTitle', '#b1Title', '#b2Title', '#consume', '#valDanno', '#valDifesa', '#tColor', '#blk1Color', '#blk2Color', '#gifCharFilter']
+      .forEach(s => el(s).addEventListener('input', update));
+    ['#blk1Alpha', '#blk2Alpha'].forEach(s => el(s).addEventListener('input', e => { el(e.target.id === 'blk1Alpha' ? '#a1' : '#a2').textContent = parseFloat(e.target.value).toFixed(2); update(); }));
+
+    function buildHtml(minified = true) {
+      const name = (el('#charName').value || 'Nome').trim();
+      const type = el('#tType').value;
+      const title = (el('#tTitle').value || 'Moveset').trim();
+      const img = (el('#tImg').value || '').trim();
+      const accent = el('#accent').value || '#7feaff';
+      const tColor = el('#tColor').value || '#7feaff';
+      const blk1 = rgba(el('#blk1Color').value || '#0c1620', parseFloat(el('#blk1Alpha').value || 0.6));
+      const blk2 = rgba(el('#blk2Color').value || '#14283c', parseFloat(el('#blk2Alpha').value || 0.65));
+      const b1Title = (el('#b1Title').value || 'Effetti').trim();
+      const b2Title = (el('#b2Title').value || 'Abilità in Combo').trim();
+      const consume = (el('#consume').value || '').trim();
+      const vDanno = (el('#valDanno').value || '').trim();
+      const vDifesa = (el('#valDifesa').value || '').trim();
+
+      const imgHtml = img ? `<div style="text-align:center;margin:14px 0;"><img src="${img}" style="width:40em;border:2px solid ${accent};padding:2px;box-shadow:0 0 12px ${accent}70"></div>` : '';
+      const header = `<div style="text-align:center;font-size:18px;margin-bottom:8px;font-weight:700;color:${tColor};text-transform:uppercase;letter-spacing:.8px;">&#10022; ${type} — <u style="color:${accent}">${title}</u> — ${name}</div>`;
+
+      const block = (bg, titleText, contentHtml) => (`<div style="background:${bg};border-left:3px solid ${accent};padding:10px 12px;margin:10px 6px;font-size:13px;">
+    <div style="font-weight:700;color:${tColor};">${titleText}</div>
+    <div style="height:1px;background:${accent};margin:6px 0;"></div>
+    ${sanitizeInline(contentHtml || '<p></p>')}
+  </div>`);
+
+      const parts = []; parts.push(`<b style="color:${tColor};">Consumo</b>:${consume ? ` ${consume}` : ''}`);
+      if (type === 'Attacco') { parts.push(`<b style="color:${tColor};margin-left:20px;">Danno</b>: ${vDanno || '—'}`); }
+      if (type === 'Difesa') { parts.push(`<b style="color:${tColor};margin-left:20px;">Difesa</b>: ${vDifesa || '—'}`); }
+      if (type === 'Contrattacco') { parts.push(`<b style="color:${tColor};margin-left:20px;">Difesa</b>: ${vDifesa || '—'}`); parts.push(`<b style="color:${tColor};margin-left:20px;">Danno</b>: ${vDanno || '—'}`); }
+      const line = `<div style="margin:10px 6px;">${parts.join(' ')}</div>`;
+      const sep = `<div style="height:1px;background:${accent};margin:24px 0;opacity:.4;"></div>`;
+
+      const full = `<div style="max-width:1000px;margin:0 auto;font:500 13px 'Courier New',monospace;color:#eaf7ff;letter-spacing:.2px;">
+    ${imgHtml}${header}
+    ${block(blk1, b1Title, q1.root.innerHTML)}
+    ${block(blk2, b2Title, q2.root.innerHTML)}
+    ${line}${sep}
+  </div>`;
+      return minify ? minify(full) : full;
+    }
+    function update() { el('#preview').innerHTML = buildHtml(false); el('#code').value = buildHtml(true); }
+
+    /* ===== bottoni ===== */
+    el('#gen').onclick = update;
+    el('#copy').onclick = async () => { try { await navigator.clipboard.writeText(el('#code').value); el('#copied').style.display = 'inline'; setTimeout(() => el('#copied').style.display = 'none', 1200); } catch (e) { alert('Copia non riuscita') } };
+    el('#clear').onclick = () => { document.querySelectorAll('input[type=text],input[type=url]').forEach(i => i.value = ''); q1.root.innerHTML = '<p>• N/A</p>'; q2.root.innerHTML = '<p>• N/A</p>'; el('#tType').value = 'Attacco'; toggleValueInputs(); update(); };
+
+    /* ===== init ===== */
+    q1.root.innerHTML = '<p></p>'; q2.root.innerHTML = '<p></p>'; toggleValueInputs(); update();
+    refreshCharSelects();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tecnica singola → blocchi piatti + toggle</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css">
+  <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+  <style>
+    :root { color-scheme: dark }
+    * { box-sizing: border-box }
+    body { margin:0; background:#0a0f14; color:#eaf7ff; font:500 14px/1.5 Inter, Segoe UI, Roboto, Arial, sans-serif }
+    .wrap { max-width:1100px; margin:24px auto; padding:0 16px }
+    .grid { display:grid; gap:14px; grid-template-columns:460px 1fr }
+    .card { background:#0f1620; border:1px solid #1f2a3a; border-radius:14px; padding:12px }
+    .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+    label { font-size:12px; opacity:.9 }
+    input[type=text],input[type=url],select,textarea { width:100%; padding:8px 10px; border-radius:10px; border:1px solid #2b3a4f; background:#0e1a25; color:#eaf7ff; outline:none }
+    input[type=color]{ appearance:none; border:none; background:transparent; width:36px; height:32px; padding:0; border-radius:8px }
+    .btn { border:1px solid #2b3647; background:#132034; color:#eaf7ff; border-radius:10px; padding:8px 12px; cursor:pointer }
+    .btn:hover{ background:#1a2a42 }
+    .danger { background:#2a1b1b; border-color:#592a2a }
+    .preview { background:#07101a; border:1px solid #142235; border-radius:16px; padding:14px; min-height:200px }
+    textarea.code { width:100%; min-height:160px; border-radius:10px; border:1px solid #203047; background:#0b1520; color:#cfeaff; padding:10px; white-space:pre; overflow:auto }
+    .qwrap{ background:#0b1620; border:1px solid #2b3a4f; border-radius:8px; margin-top:6px; margin-bottom:10px }
+    .qwrap .ql-toolbar.ql-snow{ border:none; border-bottom:1px solid #2b3a4f; border-radius:8px 8px 0 0; background:#0e1c2a }
+    .qwrap .ql-container.ql-snow{ border:none; border-radius:0 0 8px 8px; background:#0b1620 }
+    .qwrap .ql-editor{ min-height:120px }
+    .hide{ display:none }
+    @media (max-width:980px){ .grid{ grid-template-columns:1fr } }
+    /* toggle button */
+    .toggle { border:1px solid #2b3a4f; background:#132034; border-radius:8px; padding:2px 8px; font-size:12px; cursor:pointer; opacity:.9 }
+    .blk { /* flat block style like user's sample */ }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px">
+      <label class="btn" style="position:relative"><input id="openLibJson" type="file" accept="application/json" style="position:absolute;inset:0;opacity:0">Apri JSON Schede…</label>
+      <button class="btn" id="saveLibJson">Salva JSON Schede</button>
+      <label class="btn" style="position:relative"><input id="openGifJson" type="file" accept="application/json" style="position:absolute;inset:0;opacity:0">Apri JSON GIF…</label>
+      <button class="btn" id="saveGifJson">Salva JSON GIF</button>
+      <a href="tabella.html" class="px-3 py-2 rounded-lg bg-[#142235] border border-[#2b3647]"><button class="btn">Scheda</button></a>
+    </div>
+
+    <h1 style="margin:0 0 10px;font-size:22px;text-align:center">Editor <b>UNA Tecnica</b> – blocchi piatti + toggle</h1>
+
+    <div class="card" style="margin-bottom:10px">
+      <div class="row">
+        <div style="flex:1;min-width:200px">
+          <label>Personaggio (da libreria schede)</label>
+          <select id="charSelect"></select>
+        </div>
+        <button class="btn" id="btnLoadChar">Carica Abilità/Effetti…</button>
+        <div style="flex:1;min-width:220px">
+          <label>GIF: filtro per personaggio</label>
+          <select id="gifCharFilter"></select>
+        </div>
+        <button class="btn" id="openGallery" type="button">Apri galleria GIF</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Impostazioni intestazione</div>
+        <div class="row">
+          <div style="flex:1;min-width:200px"><label>Nome personaggio (opz.)</label><input id="charName" type="text" placeholder="Es. Kuzan"></div>
+          <div style="flex:1;min-width:200px;display:flex;align-items:center;gap:8px">
+            <input id="accent" type="color" value="#7feaff"><div><label>Colore accento</label></div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:200px">
+            <label>Tipo</label>
+            <select id="tType">
+              <option>Supporto</option><option selected>Attacco</option><option>Difesa</option><option>Sabotaggio</option><option>Contrattacco</option>
+            </select>
+          </div>
+          <div style="flex:1;min-width:200px;display:flex;align-items:center;gap:8px">
+            <input id="tColor" type="color" value="#7feaff"><div><label>Colore titolo</label></div>
+          </div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>Titolo sezione</label><input id="tTitle" type="text" placeholder="Moveset"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1"><label>GIF/Immagine intestazione (URL)</label><input id="tImg" type="url" placeholder="https://...gif"></div>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Contenuti</div>
+        <div class="row">
+          <div style="flex:1"><label>Titolo blocco 1</label><input id="b1Title" type="text" value="Effetti"></div>
+        </div>
+        <div class="qwrap"><div id="b1"></div></div>
+
+        <div class="row">
+          <div style="flex:1"><label>Titolo blocco 2</label><input id="b2Title" type="text" value="Abilità in Combo"></div>
+        </div>
+        <div class="qwrap"><div id="b2"></div></div>
+
+        <div style="margin-top:10px;font-weight:700">Riga finale</div>
+        <div class="row">
+          <div style="flex:1"><label>Consumo</label><input id="consume" type="text" placeholder="es. 50 PE"></div>
+        </div>
+        <div class="row" id="rowDanno">
+          <div style="flex:1"><label>Valore <b>Danno</b> (Attacco/Contrattacco)</label><input id="valDanno" type="text" placeholder="es. 600"></div>
+        </div>
+        <div class="row" id="rowDifesa">
+          <div style="flex:1"><label>Valore <b>Difesa</b> (Difesa/Contrattacco)</label><input id="valDifesa" type="text" placeholder="es. 500"></div>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Colori blocchi</div>
+        <div class="row">
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="blk1Color" type="color" value="#0c1620"><label>Blocco scuro A</label>
+            <input id="blk1Alpha" type="range" min="0" max="1" step="0.01" value="0.60"><span id="a1" style="opacity:.7">0.60</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input id="blk2Color" type="color" value="#14283c"><label>Blocco scuro B</label>
+            <input id="blk2Alpha" type="range" min="0" max="1" step="0.01" value="0.65"><span id="a2" style="opacity:.7">0.65</span>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="gen">Rigenera</button>
+          <button class="btn" id="copy">Copia</button>
+          <button class="btn danger" id="clear">Pulisci</button>
+          <span id="copied" style="display:none;opacity:.8">Copiato ✅</span>
+        </div>
+
+        <div style="margin-top:10px;font-weight:700">Codice (una riga)</div>
+        <textarea id="code" class="code" readonly></textarea>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Anteprima</div>
+        <div id="preview" class="preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== helpers ===== */
+    const el = s => document.querySelector(s);
+    const minify = s => s.replace(/\\s*[\\r\\n]+\\s*/g,'').replace(/>\\s+</g,'><').trim();
+    const hexToRgb = h => { let c = (h || '').replace('#',''); if (c.length === 3) c = c.split('').map(x => x + x).join(''); const n = parseInt(c || '000000', 16); return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }; };
+    const rgba = (hex, a) => { const { r, g, b } = hexToRgb(hex); return `rgba(${r}, ${g}, ${b}, ${a})`; };
+    const slug = s => (s || '').toLowerCase().trim().replace(/[^a-z0-9\\u00C0-\\u024f\\s-]/g,'').replace(/\\s+/g,'-');
+
+    /* sanitize: keep inline color/background/font-weight/font-style/decoration/align */
+    const sanitizeInline = html => {
+      const t = document.createElement('div'); t.innerHTML = html || '';
+      const ok = new Set(['DIV','B','I','U','S','STRONG','EM','SPAN','BR','A','IMG','P','UL','OL','LI','H1','H2','H3','H4','H5','H6']);
+      const walk = n => { [...n.childNodes].forEach(ch => {
+          if (ch.nodeType === 1) {
+            if (!ok.has(ch.tagName)) { ch.replaceWith(...ch.childNodes); return; }
+            [...ch.attributes].forEach(a => {
+              const k = a.name.toLowerCase();
+              if (k.startsWith('on')) ch.removeAttribute(a.name);
+              if (k === 'style') {
+                const safe = []; (a.value || '').split(';').forEach(r => {
+                  const [p, v] = (r || '').split(':').map(x => x && x.trim());
+                  const allow = ['color','background-color','font-weight','font-style','text-decoration','text-decoration-line','text-align'].includes((p || '').toLowerCase());
+                  if (allow && v) safe.push(p + ':' + v);
+                });
+                ch.setAttribute('style', safe.join(';'));
+              }
+              if (ch.tagName === 'A' && k === 'href' && !/^https?:/i.test(a.value)) ch.removeAttribute('href');
+              if (ch.tagName === 'IMG' && !['src','alt','title','style'].includes(a.name)) ch.removeAttribute(a.name);
+            });
+            walk(ch);
+          }
+        }); return n.innerHTML; };
+      return walk(t);
+    };
+
+    /* Quill: enable style attributors for color/background */
+    const ColorStyle = Quill.import('attributors/style/color');
+    const BackgroundStyle = Quill.import('attributors/style/background');
+    Quill.register(ColorStyle, true); Quill.register(BackgroundStyle, true);
+
+    /* ===== editors ===== */
+    const q1 = new Quill('#b1', { theme:'snow', modules:{ toolbar:[['bold','italic','underline'],[{color:[]},{background:[]}],[{list:'ordered'},{list:'bullet'}],[{'align':[]}],['link','clean']] }, formats:['bold','italic','underline','list','align','color','background','link'] });
+    const q2 = new Quill('#b2', { theme:'snow', modules:{ toolbar:[['bold','italic','underline'],[{color:[]},{background:[]}],[{list:'ordered'},{list:'bullet'}],[{'align':[]}],['link','clean']] }, formats:['bold','italic','underline','list','align','color','background','link'] });
+    [q1,q2].forEach(q=>q.on('text-change', update));
+
+    function toggleValueInputs(){
+      const t = el('#tType').value;
+      const showD = (t==='Attacco' || t==='Contrattacco');
+      const showDef = (t==='Difesa' || t==='Contrattacco');
+      el('#rowDanno').classList.toggle('hide', !showD);
+      el('#rowDifesa').classList.toggle('hide', !showDef);
+    }
+    el('#tType').addEventListener('change', ()=>{ toggleValueInputs(); update(); });
+
+    /* ===== simple lib placeholders ===== */
+    let LIB = {};
+    let GIF_LIB = { "Kuzan": [] };
+
+    function refreshCharSelects(){
+      const names = Object.keys(LIB).sort((a,b)=>a.localeCompare(b,'it'));
+      el('#charSelect').innerHTML = names.length ? names.map(n=>`<option value="${n}">${n}</option>`).join('') : `<option value="">(nessuno)</option>`;
+      const allGifNames = ['(tutte)', ...Object.keys(GIF_LIB).sort((a,b)=>a.localeCompare(b,'it'))];
+      el('#gifCharFilter').innerHTML = allGifNames.map(n=>`<option value="${n}">${n}</option>`).join('');
+    }
+    function openLibFile(input, assign) {
+      input.addEventListener('change', async e => {
+        const f = e.target.files?.[0]; if (!f) return;
+        try { const obj = JSON.parse(await f.text()); assign(obj || {}); refreshCharSelects(); alert('File JSON caricato.'); }
+        catch(err){ alert('Errore JSON: ' + err.message); }
+        e.target.value='';
+      });
+    }
+    openLibFile(document.querySelector('#openLibJson'), obj=>{ LIB=obj; });
+    openLibFile(document.querySelector('#openGifJson'), obj=>{ GIF_LIB=obj; });
+    el('#saveLibJson').onclick = ()=>{ const blob=new Blob([JSON.stringify(LIB,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='schede_gdr.json'; a.click(); URL.revokeObjectURL(url); };
+    el('#saveGifJson').onclick = ()=>{ const blob=new Blob([JSON.stringify(GIF_LIB,null,2)],{type:'application/json'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='gif_libreria.json'; a.click(); URL.revokeObjectURL(url); };
+
+    /* ===== helpers ===== */
+    function hasMeaningfulHtml(html){
+      const tmp = document.createElement('div');
+      tmp.innerHTML = sanitizeInline(html || '');
+      const text = (tmp.textContent || '').replace(/\\s+/g,'').trim();
+      return !!text || tmp.querySelector('li, img, p');
+    }
+
+    function buildBlock(id, titleText, bodyHtml, bg, accent, tColor, startClosed){
+      const style = `background:${bg};border-left:3px solid ${accent};padding:10px 12px;margin:10px 6px;font-size:13px;box-shadow:inset 0 0 6px ${accent}40;`;
+      const btn = `<button type="button" class="toggle" data-toggle="${id}" aria-expanded="${!startClosed}">[${startClosed?'+':'−'}]</button>`;
+      const head = `<div class="collapser" style="display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid ${accent};padding-bottom:6px;margin-bottom:6px;font-weight:700;color:${tColor};"><span>${titleText}</span>${btn}</div>`;
+      const body = `<div data-body="${id}" ${startClosed?'style="display:none"':''}>${sanitizeInline(bodyHtml||'<p></p>')}</div>`;
+      return `<div id="${id}" class="blk" style="${style}">${head}${body}</div>`;
+    }
+
+    function bindToggles(scope){
+      scope.querySelectorAll('[data-toggle]').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          e.preventDefault();
+          e.stopPropagation();
+          const id = btn.getAttribute('data-toggle');
+          const body = scope.querySelector(`[data-body="${id}"]`);
+          if(!body) return;
+          const isHidden = body.style.display==='none';
+          body.style.display = isHidden ? '' : 'none';
+          btn.textContent = isHidden ? '[−]' : '[+]';
+          btn.setAttribute('aria-expanded', String(isHidden));
+        }, { passive:false });
+      });
+    }
+
+    function buildHtml(minified=true){
+      const name=(el('#charName').value||'Nome').trim();
+      const type=el('#tType').value;
+      const title=(el('#tTitle').value||'Moveset').trim();
+      const img=(el('#tImg').value||'').trim();
+      const accent=el('#accent').value||'#7feaff';
+      const tColor=el('#tColor').value||'#7feaff';
+      const blk1bg = rgba(el('#blk1Color').value||'#0c1620', parseFloat(el('#blk1Alpha').value||0.6));
+      const blk2bg = rgba(el('#blk2Color').value||'#14283c', parseFloat(el('#blk2Alpha').value||0.65));
+      const b1Title=(el('#b1Title').value||'Effetti').trim();
+      const b2Title=(el('#b2Title').value||'Abilità in Combo').trim();
+      const consume=(el('#consume').value||'').trim();
+      const vDanno=(el('#valDanno').value||'').trim();
+      const vDifesa=(el('#valDifesa').value||'').trim();
+
+      const imgHtml = img ? `<div style="text-align:center;margin:14px 0;"><img src="${img}" style="width:40em;border:2px solid ${accent};padding:2px;box-shadow:0 0 12px ${accent}70"></div>` : '';
+      const header = `<div id="tecnica-${slug(title)}" style="text-align:center;font-size:18px;margin-bottom:8px;font-weight:700;color:${tColor};text-transform:uppercase;letter-spacing:.8px;">&#10022; ${type} — <u style="color:${accent}">${title}</u> — ${name}</div>`;
+
+      const effHas = hasMeaningfulHtml(q1.root.innerHTML);
+      const abilHas = hasMeaningfulHtml(q2.root.innerHTML);
+
+      const b1 = effHas ? buildBlock('effetti', b1Title, q1.root.innerHTML, blk1bg, accent, tColor, false) : '';
+      const b2 = abilHas ? buildBlock('abilita', b2Title, q2.root.innerHTML, blk2bg, accent, tColor, true) : '';
+
+      const parts = [];
+      parts.push(`<b style="color:${tColor};">Consumo</b>:${consume?` ${consume}`:''}`);
+      if(type==='Attacco'){ parts.push(`<b style="color:${tColor};margin-left:20px;">Danno</b>: ${vDanno||'—'}`); }
+      if(type==='Difesa'){ parts.push(`<b style="color:${tColor};margin-left:20px;">Difesa</b>: ${vDifesa||'—'}`); }
+      if(type==='Contrattacco'){ parts.push(`<b style="color:${tColor};margin-left:20px;">Difesa</b>: ${vDifesa||'—'}`); parts.push(`<b style="color:${tColor};margin-left:20px;">Danno</b>: ${vDanno||'—'}`); }
+      const line = `<div style="margin:10px 6px;">${parts.join(' ')}</div>`;
+      const sep  = `<div style="height:1px;background:${accent};margin:24px 0;opacity:.4;"></div>`;
+
+      const full = `<div style="max-width:1000px;margin:0 auto;font:500 13px 'Courier New',monospace;color:#eaf7ff;letter-spacing:.2px;">${imgHtml}${header}${b1}${b2}${line}${sep}</div>`;
+      return minified ? minify(full) : full;
+    }
+
+    function update(){
+      const html = buildHtml(false);
+      const code = buildHtml(true);
+      el('#preview').innerHTML = html;
+      el('#code').value = code;
+      bindToggles(el('#preview'));
+    }
+
+    /* ===== buttons ===== */
+    el('#gen').onclick = update;
+    el('#copy').onclick = async()=>{ try{ await navigator.clipboard.writeText(el('#code').value); el('#copied').style.display='inline'; setTimeout(()=>el('#copied').style.display='none',1200);}catch(e){ alert('Copia non riuscita'); } };
+    el('#clear').onclick = ()=>{ document.querySelectorAll('input[type=text],input[type=url]').forEach(i=>i.value=''); q1.root.innerHTML='<p>• N/A</p>'; q2.root.innerHTML='<p>• N/A</p>'; el('#tType').value='Attacco'; toggleValueInputs(); update(); };
+
+    /* ===== init ===== */
+    q1.root.innerHTML='<p></p>'; q2.root.innerHTML='<p></p>'; toggleValueInputs(); update(); refreshCharSelects();
+  </script>
+</body>
+</html>
