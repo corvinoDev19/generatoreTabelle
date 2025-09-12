@@ -395,7 +395,7 @@ function renderPreview(){
     ${avatarDiv}
     <div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div>
     <div style="white-space:normal;margin-bottom:6px;">
-      ${pill('Nome',name,accent)}${pill('Classe',klass,accent)}
+     ${pill('Classe',klass,accent)}
       ${stat('PV',P.PV,accent)}${stat('PE',P.PE,accent)}${stat('ATK',P.ATK,accent)}${stat('DEF',P.DEF,accent)}${stat('CTR',P.CTR,accent)}${stat('SUP',P.SUP,accent)}${stat('SAB',P.SAB,accent)}${stat('Eff.',P.EFF,accent)}${stat('Slot',P.SLOT,accent)}
     </div>
     <details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${rgba(accent,.05)};">
@@ -492,7 +492,7 @@ function generateCode(){
 
   const avatarDiv=avatar?`<div style="float:${side};margin:2px 0 0 12px;text-align:right;"><img src="${avatar}" style="width:110px;height:110px;border-radius:50%;border:2px solid ${accent};object-fit:cover;display:block;"></div>`:'';
 
-  const html = `<div style="box-sizing:border-box;background:${bg};color:${fg};border:2px solid ${accent};border-radius:16px;padding:12px;max-width:1200px;margin:0 auto;font:500 10pt 'Courier New',monospace;line-height:1.35;letter-spacing:.1px;">${avatarDiv}<div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div><div style="white-space:normal;margin-bottom:6px;">${pill('Nome',name,accent)}${pill('Classe',klass,accent)}${stat('PV',P.PV)}${stat('PE',P.PE)}${stat('ATK',P.ATK)}${stat('DEF',P.DEF)}${stat('CTR',P.CTR)}${stat('SUP',P.SUP)}${stat('SAB',P.SAB)}${stat('Eff.',P.EFF)}${stat('Slot',P.SLOT)}</div><details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Abilità</summary><div style="margin-top:6px;">${abilBlocks||''}</div></details><details style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Effetti</summary><div style="margin-top:6px;">${effBlocks||''}</div></details><div style="clear:both;"></div></div>`;
+  const html = `<div style="box-sizing:border-box;background:${bg};color:${fg};border:2px solid ${accent};border-radius:16px;padding:12px;max-width:1000px;margin:0 auto;font:500 10pt 'Courier New',monospace;line-height:1.35;letter-spacing:.1px;">${avatarDiv}<div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div><div style="white-space:normal;margin-bottom:6px;">${pill('Nome',name,accent)}${pill('Classe',klass,accent)}${stat('PV',P.PV)}${stat('PE',P.PE)}${stat('ATK',P.ATK)}${stat('DEF',P.DEF)}${stat('CTR',P.CTR)}${stat('SUP',P.SUP)}${stat('SAB',P.SAB)}${stat('Eff.',P.EFF)}${stat('Slot',P.SLOT)}</div><details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Abilità</summary><div style="margin-top:6px;">${abilBlocks||''}</div></details><details style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Effetti</summary><div style="margin-top:6px;">${effBlocks||''}</div></details><div style="clear:both;"></div></div>`;
   el('#code').value = minify(html);
 
   // ---- autosave sullo stesso file
@@ -633,55 +633,7 @@ el('#btnSaveFS').onclick = saveJsonToHandle;
 
 /* ========= Seed iniziale: "Kuzan" ========= */
 LIB = {
-  "Kuzan": {
-    "name":"Kuzan",
-    "class":"Sabotaggio",
-    "avatar":"https://i.pinimg.com/736x/d5/c0/f9/d5c0f9b8019f3bb6a1d9e2624acff8d5.jpg",
-    "colors":{"accent":"#29e5ff","bg":"#0b0e12","fg":"#eaf7ff","side":"right"},
-    "stats":{"PV":1000,"PE":2250,"ATK":500,"DEF":500,"CTR":500,"SUP":1250,"SAB":2500,"EFF":250,"SLOT":1},
-    "styles":{"abilBorder":{"c":"#3ec3ed","a":0.4},"abilBg":{"c":"#3ec3ed","a":0.07},"effBorder":{"c":"#3ec3ed","a":0.4},"effBg":{"c":"#3ec3ed","a":0.07}},
-    "abilities":[
-      {
-        "type":"ability",
-        "title":"✦ Hie Hie no Mi – Gelo del Sabotaggio",
-        "tag":"[x3]",
-        "tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,
-        "html":normalizeForQuill(`Il possessore del <b>Hie Hie no Mi</b> plasma il ghiaccio direttamente dal proprio valore di <b>Sabotaggio</b>, permeando ogni colpo e manovra con un gelo che si insinua sia esternamente che internamente nei parametri avversari colpiti.
-<i style="color:#3ec3ed;">Ogni azione genera passivamente Sabotaggio nei parametri avversari coinvolti nel contrasto, congelandoli e rendendoli temporaneamente inattivi. Per spezzare questa morsa glaciale, l’avversario è costretto a consumare attivamente i propri Punti Supporto, sottraendoli alle azioni di contrasto per infrangere il gelo. Fanno eccezione solo coloro dotati di una vera immunità al ghiaccio. Finché la compensazione non avviene, i parametri colpiti restano bloccati, riducendo drasticamente l’efficacia delle tecniche e trasformando ogni scontro contro il gelo in una lotta contro il tempo e l’esaurimento.</i>
-Inoltre, abbassando costantemente la temperatura ambientale e corporea dell’avversario, ogni PE perso riduce progressivamente la sua Resistenza. Ogni volta che si consuma il 25% dei PE iniziali, le difese si abbassano ulteriormente e l’avversario subisce una progressione di effetti da ghiaccio, attivando automaticamente gli effetti di tipo Sabotaggio: <i style="color:#3ec3ed;">Intorpidimento</i> → <i style="color:#3ec3ed;">Ipotermia</i> → <i style="color:#3ec3ed;">Necrosi</i>.`)
-      },
-      {
-        "type":"ability",
-        "title":"✦ Busōshoku no Haki – Ambizione Corazzata",
-        "tag":"[x3]",
-        "tColor":"purple","bColor":"purple","bA":0.5,"bgColor":"purple","bgA":0.10,
-        "html":normalizeForQuill(`Kuzan <b style="color:purple;">Busōshoku no Haki</b> infonde e <i style="color:purple;">plasma nuovi parametri reali basandosi sul proprio valore di <b>Supporto</b></i>, trasformando la volontà in forza tangibile e barriera inviolabile.
-<i style="color:purple;">Questa tecnica consente un’applicazione avanzata dell’Ambizione, permettendo di annichilire i poteri dei Frutti del Diavolo: aumentando il costo in PE(x2), il Busōshoku no Haki può bloccare e neutralizzare anche gli effetti più devastanti, come dimostrato nel caso dei terremoti del possessore del Gura Gura no Mi.</i>
-<i style="color:purple;">Ma il vero apice risiede nel dominio avanzato dell’Ambizione: Kuzan espande la carica base delle proprie azioni, saturandole con la sua forza di volontà. In questo stato, ogni tecnica si attiva con la quantità esatta e necessaria di energia, ignorando condizioni, limiti o conseguenze. È l’Ambizione che detta la legge – e Kuzan ne è il braccio esecutore.</i>`)
-      },
-      {
-        "type":"ability",
-        "title":"✦ Kenbun Shoku – Istinto Precognitivo",
-        "tag":"[x2]",
-        "tColor":"#ffffff","bColor":"#ffffff","bA":0.3,"bgColor":"#ffffff","bgA":0.07,
-        "html":normalizeForQuill(`L’utilizzatore affina i sensi a tal punto da percepire e prevedere ogni intenzione, pensiero e movimento dell’avversario, agendo sempre un istante prima che il nemico possa reagire.
-<i style="color:#ffffff;">In attacco, le tecniche ottengono lo status <b>Anti-Contrattacco</b>. In difesa, consente di applicare i propri effetti prima del contrasto. [x2]</i>`)
-      }
-    ],
-    "effects":[
-      {"type":"effect","title":"✦ Frantumazione Glaciale","tag":"[SUP - Indotto]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Combinando il potere dell’intangibilità Rogia con il gelo assoluto, l’utilizzatore si libera da ogni vincolo o status, dissolvendosi in frammenti di ghiaccio che sfuggono a ogni costrizione. <i style="color:#3ec3ed;">L’utilizzatore sfrutta l’intangibilità per trasformare le condizioni negative subite in pura brina, frantumandole e annullandole all’istante.</i>`)},
-      {"type":"effect","title":"✦ Fuga Eterea – Intangibilità Rogia","tag":"[SUP - Indotto]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Quando l’intangibilità del Rogia si fonde con l’Ambizione, l’utilizzatore acquisisce il potere di dissolversi e ricomporsi all’istante. <i style="color:#3ec3ed;">Questa abilità permette di rinunciare allo slot effetto per convertire l’intero valore SUP in un PV temporaneo, protetto dall’intangibilità durante la propria azione. <span style="color:red;">Applicando questo fattore, Aokiji è costretto ad annullare sia il potenziamento che l’utilizzo dei SUP tramite l’Haki dell’Armatura.</span></i>`)},
-      {"type":"effect","title":"✦ Dominio Gelido – Manipolazione Ambientale","tag":"[SUP - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Quando l’utilizzatore manipola il ghiaccio, l’ambiente circostante viene trasformato e saturato dal suo potere. <i style="color:#3ec3ed;">Il 50% dei PE spesi rimane nell’ambiente e può essere riutilizzato in azioni successive legate al ghiaccio.</i>`)},
-      {"type":"effect","title":"✦ Morfogenesi Glaciale","tag":"[SUP - Indotto]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Modella il ghiaccio creando costrutti proporzionali al SUP. <i style="color:#3ec3ed;">Per ogni carica di PE spesa, genera costrutti riutilizzabili e adattivi. [50PE : 25% SUP]</i>`)},
-      {"type":"effect","title":"✦ Intorpidimento","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Il freddo rallenta ogni impulso vitale. <i style="color:#3ec3ed;">L’efficacia dell’energia e della carica PE si riduce del 50%.</i>`)},
-      {"type":"effect","title":"✦ Ipotermia","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`La temperatura crolla oltre i limiti. <i style="color:#3ec3ed;">L’avversario deve spendere il doppio dei PE previsti o tutti i parametri si riducono in base a SAB.</i>`)},
-      {"type":"effect","title":"✦ Necrosi","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Il gelo distrugge i tessuti. <i style="color:#3ec3ed;">Il costo minimo di attivazione viene pagato in PV.</i>`)},
-      {"type":"effect","title":"✦ Prigione di Gelo – Sfere Congelanti","tag":"[SAB - Area]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Raffica di sfere che avvolgono l’avversario in cristalli. <i style="color:#3ec3ed;">Congela e annienta il PE residuo in contrasto, infliggendo danni reali.</i>`)},
-      {"type":"effect","title":"✦ Visione Precognitiva – Schivata Perfetta","tag":"[DEF - Evasione]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Anticipa l’azione nemica e la schiva applicando le giuste contromisure. <i style="color:#3ec3ed;">Evita lo slot effetto e le penalità collegate.</i>`)},
-      {"type":"effect","title":"✦ Oblio Gelido","tag":"[ATK - Raggio]","tColor":"#3ec3ed","bColor":"#3ec3ed","bA":0.4,"bgColor":"#3ec3ed","bgA":0.07,"html":normalizeForQuill(`Congela un fattore attivo in scheda finché il bersaglio non sacrifica un’azione (pagando comunque i PE) per spezzare il ghiaccio.`)}
-    ]
-  }
-};
+ };
 refreshSelect();
 uiFromSheet(LIB["Kuzan"]);
 </script>

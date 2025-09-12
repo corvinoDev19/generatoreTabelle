@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Resoconto – GIF condivise + Preset JSON dedicati</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css">
+<script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.min.js"></script>
+<style>
+  :root { color-scheme: dark }
+  * { box-sizing: border-box }
+  body { margin:0; background:#0a0f14; color:#eaf7ff; font:500 14px/1.5 Inter, Segoe UI, Roboto, Arial, sans-serif }
+  .wrap { max-width:1160px; margin:24px auto; padding:0 16px }
+  .grid { display:grid; gap:14px; grid-template-columns:520px 1fr }
+  @media (max-width:980px){ .grid { grid-template-columns:1fr } }
+  .card { background:#0f1620; border:1px solid #1f2a3a; border-radius:14px; padding:12px }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
+  label { font-size:12px; opacity:.9 }
+  input[type="text"], input[type="url"], input[type="number"], input[type="color"], select {
+    width:100%; padding:8px 10px; border-radius:10px; border:1px solid #2b3a4f; background:#0e1a25; color:#eaf7ff; outline:none
+  }
+  .btn { border:1px solid #2b3647; background:#132034; color:#eaf7ff; border-radius:10px; padding:8px 12px; cursor:pointer }
+  .btn:hover { background:#1a2a42 }
+  textarea.code { width:100%; min-height:160px; background:#0b1520; border:1px solid #203047; border-radius:10px; color:#cfeaff; padding:10px; white-space:pre; overflow:auto }
+  .preview { background:#07101a; border:1px solid #142235; border-radius:16px; padding:14px; min-height:200px }
+  .qwrap { background:#0b1620; border:1px solid #2b3a4f; border-radius:8px; margin-top:6px; margin-bottom:10px }
+  .qwrap .ql-toolbar.ql-snow { border:none; border-bottom:1px solid #2b3a4f; border-radius:8px 8px 0 0; background:#0e1c2a }
+  .qwrap .ql-container.ql-snow { border:none; border-radius:0 0 8px 8px; background:#0b1620 }
+  .qwrap .ql-editor { min-height:140px }
+  .pill { display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid #2b3a4f; background:#132034; font-size:12px }
+  /* Modal gallery */
+  .modal { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; padding:16px; z-index:9999 }
+  .modal.open { display:flex }
+  .modal-card { background:#0f1620; border:1px solid #1f2a3a; border-radius:14px; max-width:980px; width:100%; max-height:88vh; overflow:auto; padding:12px }
+  .modal-head { display:flex; gap:10px; align-items:center; justify-content:space-between; position:sticky; top:0; background:#0f1620; padding:6px 0; border-bottom:1px solid #1f2a3a; z-index:1 }
+  .gal-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center }
+  .gal-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:10px; margin-top:10px }
+  .thumb { background:#0b1520; border:1px solid #203047; border-radius:10px; overflow:hidden; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease }
+  .thumb:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0,0,0,.35) }
+  .thumb img { width:100%; height:120px; object-fit:cover; display:block }
+  .thumb .url { font-size:11px; padding:6px 8px; color:#cfeaff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; border-top:1px solid #203047 }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Barre: Preset Resoconto JSON + GIF JSON -->
+    <div class="row" style="justify-content:flex-end;margin-bottom:6px">
+      <span class="pill">Preset Resoconto</span>
+      <label class="btn" style="position:relative"><input id="openResoJson" type="file" accept="application/json" style="position:absolute;inset:0;opacity:0">Apri JSON Preset…</label>
+      <button class="btn" id="saveResoJson" type="button">Salva JSON Preset</button>
+      <span class="pill">GIF condivise</span>
+      <label class="btn" style="position:relative"><input id="openGifJson" type="file" accept="application/json" style="position:absolute;inset:0;opacity:0">Apri JSON GIF…</label>
+      <button class="btn" id="saveGifJson" type="button">Salva JSON GIF</button>
+    </div>
+
+    <h1 style="margin:0 0 10px;font-size:22px;text-align:center">Editor <b>Resoconto</b> – GIF condivise + Preset dedicati</h1>
+
+    <div class="grid">
+      <div class="card">
+
+        <!-- Preset Resoconto -->
+        <div style="font-weight:700;margin-bottom:6px">Gestione preset (dedicati al Resoconto)</div>
+        <div class="row">
+          <div style="flex:1;min-width:220px"><label>Nome scheda</label><input id="sheetName" type="text" placeholder="es. Kuzan – Resoconto base"></div>
+          <div style="flex:1;min-width:220px"><label>Seleziona scheda</label><select id="savedSelect"></select></div>
+        </div>
+        <div class="row" style="margin-bottom:8px">
+          <button class="btn" id="btnSave">Salva/Aggiorna</button>
+          <button class="btn" id="btnLoad">Carica</button>
+          <button class="btn" id="btnDelete" style="border-color:#5a2b2b;background:#2a1b1b">Elimina</button>
+        </div>
+
+        <!-- Immagine/GIF -->
+        <div style="font-weight:700;margin-bottom:6px">Immagine intestazione</div>
+        <div class="row">
+          <div style="flex:1;min-width:220px">
+            <label>GIF/Immagine (URL)</label><input id="imgUrl" type="url" value="https://i.imgur.com/GQdOPan.gif">
+          </div>
+          <div style="flex:0 0 140px"><label>Larghezza (em)</label><input id="imgW" type="number" min="10" max="80" step="1" value="40"></div>
+          <div style="flex:0 0 140px;display:flex;align-items:center;gap:8px"><input id="accent" type="color" value="#7feaff"><div><label>Colore accento</label></div></div>
+          <div style="flex:0 0 140px">
+            <label>Glow immagine</label>
+            <select id="imgGlow"><option value="on" selected>Attivo</option><option value="off">Spento</option></select>
+          </div>
+          <div style="flex:0 0 200px">
+            <label>Filtro GIF (persona)</label><select id="gifCharFilter"></select>
+          </div>
+          <div><button class="btn" id="openGallery" type="button">Galleria GIF…</button></div>
+        </div>
+
+        <!-- Allineamento & Stile contenitore -->
+        <div class="row" style="margin-top:6px">
+          <div style="flex:0 0 180px">
+            <label>Allineamento scheda</label>
+            <select id="align"><option value="left">Sinistra</option><option value="center" selected>Centro</option><option value="right">Destra</option></select>
+          </div>
+          <div style="flex:0 0 160px"><label>Colore titolo</label><input id="tColor" type="color" value="#7feaff"></div>
+          <div style="flex:0 0 160px"><label>Bordo</label><input id="boxBd" type="color" value="#7feaff"></div>
+          <div style="flex:0 0 160px"><label>Background</label><input id="boxBg" type="color" value="#0c1620"></div>
+          <div style="flex:0 0 120px"><label>Alpha</label><input id="boxAlpha" type="number" min="0" max="1" step="0.01" value="0.6"></div>
+          <div style="flex:0 0 120px"><label>Radius (px)</label><input id="boxRadius" type="number" min="0" max="30" step="1" value="10"></div>
+        </div>
+        <div class="row">
+          <div style="flex:0 0 140px"><label>Padding V (px)</label><input id="padV" type="number" min="0" max="40" step="1" value="8"></div>
+          <div style="flex:0 0 140px"><label>Padding O (px)</label><input id="padH" type="number" min="0" max="40" step="1" value="10"></div>
+          <div style="flex:0 0 140px"><label>Margin V (px)</label><input id="marV" type="number" min="0" max="40" step="1" value="6"></div>
+          <div style="flex:0 0 140px"><label>Margin O (px)</label><input id="marH" type="number" min="0" max="40" step="1" value="6"></div>
+        </div>
+        <div class="row">
+          <div style="flex:1;min-width:200px"><label>Titolo</label><input id="sumTitle" type="text" value="Resoconto"></div>
+          <div style="flex:0 0 160px"><label>Aperto all'avvio</label><select id="openFlag"><option value="1" selected>Sì</option><option value="0">No</option></select></div>
+        </div>
+
+        <!-- Contenuto -->
+        <div class="qwrap"><div id="editor"></div></div>
+
+        <!-- Azioni -->
+        <div class="row" style="margin-top:8px">
+          <button class="btn" id="copy">Copia</button>
+          <span id="copied" style="display:none;opacity:.8">Copiato ✅</span>
+        </div>
+        <div style="margin-top:10px;font-weight:700">Codice (una riga)</div>
+        <textarea id="code" class="code" readonly></textarea>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:6px">Anteprima</div>
+        <div id="preview" class="preview"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALE GALLERIA GIF -->
+  <div id="galleryModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="gal-controls">
+          <span class="pill">Galleria GIF</span>
+          <select id="galPersonSelect" title="Personaggio"></select>
+          <input id="filterInput" type="text" placeholder="Filtro testo URL" style="padding:6px 10px;border-radius:10px;border:1px solid #2b3a4f;background:#0e1a25;color:#eaf7ff;min-width:220px">
+          <input id="addUrlInput" type="url" placeholder="Aggiungi URL singolo" style="padding:6px 10px;border-radius:10px;border:1px solid #2b3a4f;background:#0e1a25;color:#eaf7ff;min-width:240px">
+          <button class="btn" id="addUrlBtn" type="button">Aggiungi</button>
+          <button class="btn" id="bulkBtn" type="button">Importa blocco link…</button>
+        </div>
+        <button class="btn" id="closeGallery" type="button">Chiudi</button>
+      </div>
+      <div id="galleryGrid" class="gal-grid"></div>
+    </div>
+  </div>
+
+<script>
+(function(){
+  /* helpers */
+  function el(s){ return document.querySelector(s); }
+  function minify(s){ return s.replace(/\\s*[\\r\\n]+\\s*/g,'').replace(/>\\s+</g,'><').trim(); }
+  function clamp(n,mi,ma){ return Math.max(mi, Math.min(ma, n)); }
+  function hexToRgb(h){ h=String(h||'').replace('#',''); if(h.length===3){h=h.split('').map(function(x){return x+x}).join('');} var n=parseInt(h||'000000',16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+  function rgba(hex,a){ var c=hexToRgb(hex); var A=clamp(+a||0,0,1); return 'rgba('+c.r+','+c.g+','+c.b+','+A+')'; }
+  function sanitizeInline(html){
+    var t=document.createElement('div'); t.innerHTML=html||'';
+    var ok={'DIV':1,'B':1,'I':1,'U':1,'S':1,'STRONG':1,'EM':1,'SPAN':1,'BR':1,'A':1,'IMG':1,'P':1,'UL':1,'OL':1,'LI':1};
+    function walk(n){
+      [].slice.call(n.childNodes).forEach(function(ch){
+        if(ch.nodeType===1){
+          if(!ok[ch.tagName]){ ch.replaceWith.apply(ch, [].slice.call(ch.childNodes)); return; }
+          [].slice.call(ch.attributes).forEach(function(a){
+            var k=a.name.toLowerCase();
+            if(k.indexOf('on')===0) ch.removeAttribute(a.name);
+            if(k==='style'){
+              var safe=[]; String(a.value||'').split(';').forEach(function(r){
+                var pair=String(r||'').split(':');
+                var p=(pair[0]||'').trim().toLowerCase(), v=(pair[1]||'').trim();
+                var allow={'color':1,'background-color':1,'font-weight':1,'font-style':1,'text-decoration':1,'text-align':1};
+                if(allow[p] && v) safe.push(p+':'+v);
+              });
+              ch.setAttribute('style', safe.join(';'));
+            }
+            if(ch.tagName==='A' && k==='href' && !/^https?:/i.test(a.value)) ch.removeAttribute('href');
+            if(ch.tagName==='IMG' && ['src','alt','title','style'].indexOf(a.name)===-1) ch.removeAttribute(a.name);
+          });
+          walk(ch);
+        }
+      });
+      return n.innerHTML;
+    }
+    return walk(t);
+  }
+
+  /* Quill */
+  var ColorStyle = Quill.import('attributors/style/color');
+  var BackgroundStyle = Quill.import('attributors/style/background');
+  Quill.register(ColorStyle, true);
+  Quill.register(BackgroundStyle, true);
+  var q = new Quill('#editor', { theme:'snow', modules:{ toolbar:[['bold','italic','underline'],[{color:[]},{background:[]}],[{list:'ordered'},{list:'bullet'}],[{'align':[]}],['link','clean']] }, formats:['bold','italic','underline','list','align','color','background','link'] });
+  q.root.innerHTML = '<p>Scrivi qui il resoconto…</p>';
+  q.on('text-change', update);
+
+  /* Preset Resoconto (dedicati) */
+  var RESO_LIB = {}; var RESO_LS = 'reso_library_v2';
+  function loadResoLocal(){ try{ var raw=localStorage.getItem(RESO_LS); if(raw){ RESO_LIB=JSON.parse(raw)||{}; } }catch(e){} }
+  function saveResoLocal(){ try{ localStorage.setItem(RESO_LS, JSON.stringify(RESO_LIB)); }catch(e){} }
+  function refreshSaved(preselect){
+    var sel = el('#savedSelect');
+    var names = Object.keys(RESO_LIB).sort(function(a,b){ return a.localeCompare(b,'it'); });
+    sel.innerHTML = names.length ? names.map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join('') : '<option value="">(nessuna)</option>';
+    if(preselect && RESO_LIB[preselect]) sel.value = preselect;
+  }
+  function readState(){
+    return {
+      imgUrl: el('#imgUrl').value||'',
+      imgW: +el('#imgW').value||40,
+      accent: el('#accent').value||'#7feaff',
+      tColor: el('#tColor').value||'#7feaff',
+      boxBd: el('#boxBd').value||'#7feaff',
+      boxBg: el('#boxBg').value||'#0c1620',
+      boxAlpha: +el('#boxAlpha').value||0.6,
+      boxRadius: +el('#boxRadius').value||10,
+      padV: +el('#padV').value||8,
+      padH: +el('#padH').value||10,
+      marV: +el('#marV').value||6,
+      marH: +el('#marH').value||6,
+      sumTitle: String(el('#sumTitle').value||'Resoconto').trim(),
+      openFlag: el('#openFlag').value==='1',
+      imgGlow: el('#imgGlow').value||'on',
+      align: el('#align').value||'center',
+      content: q.root.innerHTML || ''
+    };
+  }
+  function applyState(s){
+    if(!s) return;
+    el('#imgUrl').value = s.imgUrl||'';
+    el('#imgW').value = s.imgW||40;
+    el('#accent').value = s.accent||'#7feaff';
+    el('#tColor').value = s.tColor||'#7feaff';
+    el('#boxBd').value = s.boxBd||'#7feaff';
+    el('#boxBg').value = s.boxBg||'#0c1620';
+    el('#boxAlpha').value = s.boxAlpha||0.6;
+    el('#boxRadius').value = s.boxRadius||10;
+    el('#padV').value = s.padV||8;
+    el('#padH').value = s.padH||10;
+    el('#marV').value = s.marV||6;
+    el('#marH').value = s.marH||6;
+    el('#sumTitle').value = s.sumTitle||'Resoconto';
+    el('#openFlag').value = s.openFlag ? '1' : '0';
+    el('#imgGlow').value = s.imgGlow||'on';
+    el('#align').value = s.align||'center';
+    if(s.content){ q.root.innerHTML = s.content; }
+  }
+
+  el('#btnSave').addEventListener('click', function(){
+    var name = String(el('#sheetName').value||'').trim();
+    if(!name){ alert('Inserisci un nome scheda.'); return; }
+    RESO_LIB[name] = readState();
+    saveResoLocal(); refreshSaved(name); alert('Scheda salvata.');
+  });
+  el('#btnLoad').addEventListener('click', function(){
+    var name = el('#savedSelect').value; if(!name || !RESO_LIB[name]){ alert('Seleziona una scheda valida.'); return; }
+    applyState(RESO_LIB[name]); update();
+  });
+  el('#btnDelete').addEventListener('click', function(){
+    var name = el('#savedSelect').value; if(!name || !RESO_LIB[name]){ alert('Seleziona una scheda da eliminare.'); return; }
+    if(!confirm('Eliminare la scheda "'+name+'"?')) return;
+    delete RESO_LIB[name]; saveResoLocal(); refreshSaved();
+  });
+  // Import/Export JSON dedicato
+  el('#openResoJson').addEventListener('change', function(e){
+    var f=e.target.files && e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){ try{ var obj=JSON.parse(r.result)||{}; RESO_LIB = Object.assign({}, RESO_LIB, obj); saveResoLocal(); refreshSaved(); alert('Preset importati.'); }catch(err){ alert('Errore JSON: '+err.message);} e.target.value=''; };
+    r.readAsText(f);
+  });
+  el('#saveResoJson').addEventListener('click', function(){
+    var blob=new Blob([JSON.stringify(RESO_LIB,null,2)], {type:'application/json'});
+    var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='resoconto_presets.json'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  /* GIF Library (solo GIF) */
+  var GIF_LIB = {"Kuzan":["https://i.imgur.com/GQdOPan.gif","https://i.imgur.com/G3uwp83.gif","https://i.imgur.com/jf7WUR6.gif"]};
+  function refreshGifSelects(){
+    var allGifNames = ['(tutte)'].concat(Object.keys(GIF_LIB).sort(function(a,b){return a.localeCompare(b,'it');}));
+    el('#gifCharFilter').innerHTML = allGifNames.map(function(n){ return '<option value="'+n+'">'+n+'</option>'; }).join('');
+    var keys = Object.keys(GIF_LIB).sort(function(a,b){return a.localeCompare(b,'it');});
+    el('#galPersonSelect').innerHTML = keys.length ? keys.map(function(n){return '<option value="'+n+'">'+n+'</option>';}).join('') : '<option value="">(nessuno)</option>';
+  }
+  function ensureGifBucket(name){ if(!name) return; if(!GIF_LIB[name]) GIF_LIB[name]=[]; }
+  function openGallery(){ refreshGifSelects(); var pre = el('#gifCharFilter').value; var first = Object.keys(GIF_LIB)[0]||''; var choose = (pre && pre!=='(tutte)') ? pre : first; el('#galPersonSelect').value = choose; renderGallery(); el('#galleryModal').classList.add('open'); el('#galleryModal').setAttribute('aria-hidden','false'); }
+  function closeGallery(){ el('#galleryModal').classList.remove('open'); el('#galleryModal').setAttribute('aria-hidden','true'); }
+  el('#openGallery').addEventListener('click', openGallery);
+  el('#closeGallery').addEventListener('click', closeGallery);
+  el('#galleryModal').addEventListener('click', function(e){ if(e.target===el('#galleryModal')) closeGallery(); });
+  function renderGallery(){
+    var grid = el('#galleryGrid'); grid.innerHTML='';
+    var who = el('#galPersonSelect').value;
+    var term = String(el('#filterInput').value||'').trim().toLowerCase();
+    var list = (who && GIF_LIB[who]) ? GIF_LIB[who] : [];
+    list.filter(function(u){ return !term || String(u).toLowerCase().indexOf(term)>=0; }).forEach(function(url){
+      var card = document.createElement('div'); card.className='thumb';
+      card.innerHTML = '<img loading="lazy" src="'+url+'"><div class="url">'+url+'</div>';
+      card.onclick = function(){ el('#imgUrl').value = url; closeGallery(); update(); };
+      grid.appendChild(card);
+    });
+  }
+  el('#galPersonSelect').addEventListener('change', renderGallery);
+  el('#filterInput').addEventListener('input', renderGallery);
+  el('#addUrlBtn').addEventListener('click', function(){
+    var who = el('#galPersonSelect').value || prompt('Associa a quale personaggio?');
+    var u = String(el('#addUrlInput').value||'').trim();
+    if(!who || !u) return;
+    if(!/^https?:\/\/.+\.(gif|png|jpg|jpeg|webp)(\?.*)?$/i.test(u)){ alert('URL immagine non valido'); return; }
+    ensureGifBucket(who);
+    if(GIF_LIB[who].indexOf(u)===-1) GIF_LIB[who].push(u);
+    el('#addUrlInput').value=''; renderGallery(); refreshGifSelects();
+  });
+  el('#bulkBtn').addEventListener('click', function(){
+    var who = prompt('Nome personaggio per associare il blocco:', el('#galPersonSelect').value || '');
+    if(!who) return;
+    var txt = prompt('Incolla qui il blocco di link (uno per riga o da HTML/QUOTE):');
+    if(!txt) return;
+    var urls = (txt.match(/https?:\/\/[^\s"']+\.(gif|png|jpg|jpeg|webp)(\?[^\s"']*)?/gi) || []);
+    var unique = []; urls.forEach(function(u){ if(unique.indexOf(u)===-1) unique.push(u); });
+    if(!unique.length){ alert('Nessuna immagine trovata.'); return; }
+    ensureGifBucket(who);
+    unique.forEach(function(u){ if(GIF_LIB[who].indexOf(u)===-1) GIF_LIB[who].push(u); });
+    alert('Importate '+unique.length+' immagini per '+who+'.');
+    refreshGifSelects(); el('#galPersonSelect').value = who; renderGallery();
+  });
+  // Import/Export GIF JSON
+  el('#openGifJson').addEventListener('change', function(e){
+    var f=e.target.files && e.target.files[0]; if(!f) return;
+    var r=new FileReader();
+    r.onload=function(){ try{ var obj=JSON.parse(r.result)||{}; GIF_LIB = obj; refreshGifSelects(); alert('GIF importate.'); }catch(err){ alert('Errore JSON: '+err.message);} e.target.value=''; };
+    r.readAsText(f);
+  });
+  el('#saveGifJson').addEventListener('click', function(){
+    var blob=new Blob([JSON.stringify(GIF_LIB,null,2)], {type:'application/json'});
+    var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='gif_libreria.json'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  /* Build output */
+  ['#imgUrl','#imgW','#accent','#tColor','#boxBd','#boxBg','#boxAlpha','#boxRadius','#padV','#padH','#marV','#marH','#sumTitle','#openFlag','#imgGlow','#align','#gifCharFilter']
+    .forEach(function(s){ el(s).addEventListener('input', update); });
+
+  function buildHtml(minifyOut){
+    var img = String(el('#imgUrl').value||'').trim();
+    var imgW = +el('#imgW').value||40;
+    var accent = el('#accent').value||'#7feaff';
+    var tColor = el('#tColor').value||'#7feaff';
+    var boxBd = el('#boxBd').value||'#7feaff';
+    var boxBg = el('#boxBg').value||'#0c1620';
+    var boxAlpha = +el('#boxAlpha').value||0.6;
+    var boxRadius = +el('#boxRadius').value||10;
+    var padV = +el('#padV').value||8;
+    var padH = +el('#padH').value||10;
+    var marV = +el('#marV').value||6;
+    var marH = +el('#marH').value||6;
+    var sumTitle = String(el('#sumTitle').value||'Resoconto').trim();
+    var isOpen = el('#openFlag').value==='1';
+    var imgGlow = el('#imgGlow').value||'on';
+    var align = el('#align').value||'center';
+
+    var alignStyle = '';
+    if(align==='center'){ alignStyle = 'display:block;width:fit-content;margin:'+marV+'px auto;'; }
+    else if(align==='right'){ alignStyle = 'display:block;width:fit-content;margin:'+marV+'px '+marH+'px '+marV+'px auto;'; }
+    else { alignStyle = 'display:block;width:fit-content;margin:'+marV+'px auto '+marV+'px '+marH+'px;'; }
+
+    var shadow = (imgGlow==='on') ? 'box-shadow:0 0 12px '+accent+'70;' : '';
+    var imgHtml = img ? '<div style="text-align:center;margin:14px 0;"><img src="'+img+'" style="width:'+imgW+'em;border:2px solid '+accent+';padding:2px;'+shadow+'"></div>' : '';
+
+    var content = sanitizeInline(q.root.innerHTML || '<p></p>');
+    var details = '<details id="effetti'+Math.random().toString(36).slice(2)+'"'+(isOpen?' open':'')+' style="margin:'+marV+'px '+marH+'px;padding:'+padV+'px '+padH+'px;border-radius:'+boxRadius+'px;border:1px solid '+boxBd+';background:'+rgba(boxBg, boxAlpha)+';">'
+      + '<summary style="cursor:pointer;font-weight:700;color:'+tColor+';font-size:12pt;display:flex;align-items:center;justify-content:space-between;">'
+      +   '<span>'+sumTitle+'</span>'
+      +   '<b style="font-size:11px;opacity:.8;border:1px solid #2b3a4f;padding:2px 8px;border-radius:999px;background:#132034;color:#cfeaff;text-decoration:none">+</b>'
+      + '</summary>'
+      + '<div style="margin-top:6px;">'+ content +'</div>'
+      + '</details>';
+
+    var full = '<div style="'+alignStyle+'max-width:1000px;font:500 13px \'Courier New\',monospace;color:#eaf7ff;letter-spacing:.2px;">'+ imgHtml + details +'</div>';
+    return minifyOut ? minify(full) : full;
+  }
+
+  function update(){
+    el('#preview').innerHTML = buildHtml(false);
+    el('#code').value = buildHtml(true);
+  }
+
+  /* init */
+  loadResoLocal(); refreshSaved(); refreshGifSelects(); update();
+})();</script>
+</body>
+</html>

@@ -1,0 +1,398 @@
+{
+  "Vinsmoke Sanji": {
+    "name": "Vinsmoke Sanji",
+    "class": "Supporto",
+    "avatar": "https://i.pinimg.com/originals/02/fa/38/02fa38fb89ddb7b5d2f11f74f60b0672.gif",
+    "colors": {
+      "accent": "#e3d156",
+      "bg": "#0b0e12",
+      "fg": "#eaf7ff",
+      "side": "right"
+    },
+    "stats": {
+      "PV": 500,
+      "PE": 2500,
+      "ATK": 500,
+      "DEF": 500,
+      "CTR": 500,
+      "SUP": 4000,
+      "SAB": 500,
+      "EFF": 250,
+      "SLOT": 0
+    },
+    "styles": {
+      "abilBorder": {
+        "c": "#e3d156",
+        "a": 0.35
+      },
+      "abilBg": {
+        "c": "#e3d156",
+        "a": 0.06
+      },
+      "effBorder": {
+        "c": "#e3d156",
+        "a": 0.35
+      },
+      "effBg": {
+        "c": "#e3d156",
+        "a": 0.05
+      }
+    },
+    "abilities": [
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      }
+    ],
+    "effects": [
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      }
+    ]
+  },
+  "Vinsmoke Sanjiw": {
+    "name": "Vinsmoke Sanjiw",
+    "class": "Supporto",
+    "avatar": "https://i.pinimg.com/originals/02/fa/38/02fa38fb89ddb7b5d2f11f74f60b0672.gif",
+    "colors": {
+      "accent": "#e3d156",
+      "bg": "#0b0e12",
+      "fg": "#eaf7ff",
+      "side": "right"
+    },
+    "stats": {
+      "PV": 500,
+      "PE": 2500,
+      "ATK": 500,
+      "DEF": 500,
+      "CTR": 500,
+      "SUP": 4000,
+      "SAB": 500,
+      "EFF": 250,
+      "SLOT": 0
+    },
+    "styles": {
+      "abilBorder": {
+        "c": "#e3d156",
+        "a": 0.35
+      },
+      "abilBg": {
+        "c": "#e3d156",
+        "a": 0.06
+      },
+      "effBorder": {
+        "c": "#e3d156",
+        "a": 0.35
+      },
+      "effBg": {
+        "c": "#e3d156",
+        "a": 0.05
+      }
+    },
+    "abilities": [
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      }
+    ],
+    "effects": [
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p>dasdasdas</p>",
+        "tColor": "#e3d156",
+        "bColor": "#e3d156",
+        "bA": 0.35,
+        "bgColor": "#e3d156",
+        "bgA": 0.06
+      }
+    ]
+  }
+}
