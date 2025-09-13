@@ -395,7 +395,7 @@ function renderPreview(){
     ${avatarDiv}
     <div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div>
     <div style="white-space:normal;margin-bottom:6px;">
-     ${pill('Classe',klass,accent)}
+     ${pill('Cls',klass,accent)}
       ${stat('PV',P.PV,accent)}${stat('PE',P.PE,accent)}${stat('ATK',P.ATK,accent)}${stat('DEF',P.DEF,accent)}${stat('CTR',P.CTR,accent)}${stat('SUP',P.SUP,accent)}${stat('SAB',P.SAB,accent)}${stat('Eff.',P.EFF,accent)}${stat('Slot',P.SLOT,accent)}
     </div>
     <details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${rgba(accent,.05)};">
@@ -492,7 +492,7 @@ function generateCode(){
 
   const avatarDiv=avatar?`<div style="float:${side};margin:2px 0 0 12px;text-align:right;"><img src="${avatar}" style="width:110px;height:110px;border-radius:50%;border:2px solid ${accent};object-fit:cover;display:block;"></div>`:'';
 
-  const html = `<div style="box-sizing:border-box;background:${bg};color:${fg};border:2px solid ${accent};border-radius:16px;padding:12px;max-width:1000px;margin:0 auto;font:500 10pt 'Courier New',monospace;line-height:1.35;letter-spacing:.1px;">${avatarDiv}<div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div><div style="white-space:normal;margin-bottom:6px;">${pill('Nome',name,accent)}${pill('Classe',klass,accent)}${stat('PV',P.PV)}${stat('PE',P.PE)}${stat('ATK',P.ATK)}${stat('DEF',P.DEF)}${stat('CTR',P.CTR)}${stat('SUP',P.SUP)}${stat('SAB',P.SAB)}${stat('Eff.',P.EFF)}${stat('Slot',P.SLOT)}</div><details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Abilità</summary><div style="margin-top:6px;">${abilBlocks||''}</div></details><details style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Effetti</summary><div style="margin-top:6px;">${effBlocks||''}</div></details><div style="clear:both;"></div></div>`;
+  const html = `<div style="box-sizing:border-box;background:${bg};color:${fg};border:2px solid ${accent};border-radius:16px;padding:12px;max-width:1000px;margin:0 auto;font:500 10pt 'Courier New',monospace;line-height:1.35;letter-spacing:.1px;">${avatarDiv}<div style="font-weight:700;color:${accent};font-size:14pt;margin-bottom:6px;">${name}</div><div style="white-space:normal;margin-bottom:6px;">${pill('Cls',klass,accent)}${stat('PV',P.PV)}${stat('PE',P.PE)}${stat('ATK',P.ATK)}${stat('DEF',P.DEF)}${stat('CTR',P.CTR)}${stat('SUP',P.SUP)}${stat('SAB',P.SAB)}${stat('Eff.',P.EFF)}${stat('Slot',P.SLOT)}</div><details open style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Abilità</summary><div style="margin-top:6px;">${abilBlocks||''}</div></details><details style="margin:6px 0;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${accentRGBA05};"><summary style="cursor:pointer;font-weight:700;color:${accent};font-size:12pt;">✦ Effetti</summary><div style="margin-top:6px;">${effBlocks||''}</div></details><div style="clear:both;"></div></div>`;
   el('#code').value = minify(html);
 
   // ---- autosave sullo stesso file

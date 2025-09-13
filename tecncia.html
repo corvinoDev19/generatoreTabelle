@@ -72,7 +72,6 @@
     }
     .qwrap .ql-container.ql-snow { border: none; border-radius: 0 0 8px 8px; background: #0b1620 }
     .qwrap .ql-editor { min-height: 120px }
-    /* non forziamo più i colori inline */
 
     .hide { display: none }
 
@@ -281,10 +280,10 @@
   <script>
     /* ===== helpers ===== */
     const el = s => document.querySelector(s);
-    const minify = s => s.replace(/\s*[\r\n]+\s*/g,'').replace(/>\s+</g,'><').trim();
+    const _minify = s => s.replace(/\s*[\r\n]+\s*/g,'').replace(/>\s+</g,'><').trim();
     const hexToRgb = h => { let c = (h || '').replace('#', ''); if (c.length === 3) c = c.split('').map(x => x + x).join(''); const n = parseInt(c || '000000', 16); return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }; };
     const rgba = (hex, a) => { const { r, g, b } = hexToRgb(hex); return `rgba(${r}, ${g}, ${b}, ${a})`; };
-    const slug = s => (s || '').toLowerCase().trim().replace(/[^a-z0-9\\u00C0-\\u024f\\s-]/g, '').replace(/\\s+/g, '-');
+    const slug = s => (s || '').toLowerCase().trim().replace(/[^a-z0-9\u00C0-\u024f\s-]/g, '').replace(/\s+/g, '-');
 
     /* keep inline color/background/font-weight/decoration/align + strong/em/s */
     const sanitizeInline = html => {
@@ -350,6 +349,52 @@
       el('#gifCharFilter').innerHTML = allGifNames.map(n => `<option value="${n}">${n}</option>`).join('');
       el('#galPersonSelect').innerHTML = Object.keys(GIF_LIB).length ? Object.keys(GIF_LIB).sort((a, b) => a.localeCompare(b, 'it')).map(n => `<option value="${n}">${n}</option>`).join('') : `<option value="">(nessuno)</option>`;
     }
+
+    /* === APPLY COLORS FROM SHEET === */
+    function setInputValue(sel, val) {
+      if (val == null) return;
+      const i = el(sel);
+      if (!i) return;
+      i.value = val;
+    }
+    function setAlpha(sel, val) {
+      if (typeof val !== 'number') return;
+      const i = el(sel);
+      if (!i) return;
+      i.value = val;
+      el(sel === '#blk1Alpha' ? '#a1' : '#a2').textContent = val.toFixed(2);
+    }
+    function applySheetColorsFrom(S) {
+      if (!S) return;
+      // Nome
+      setInputValue('#charName', S.name || '');
+      // Accent / Titolo
+      const accent = S.colors?.accent;
+      if (accent) {
+        setInputValue('#accent', accent);
+        setInputValue('#tColor', accent);
+      }
+      // Effetti → Blocco A (effBg)
+      const effBgC = S.styles?.effBg?.c;
+      const effBgA = S.styles?.effBg?.a;
+      if (effBgC) setInputValue('#blk1Color', effBgC);
+      if (typeof effBgA === 'number') setAlpha('#blk1Alpha', effBgA);
+      // Abilità → Blocco B (abilBg)
+      const abilBgC = S.styles?.abilBg?.c;
+      const abilBgA = S.styles?.abilBg?.a;
+      if (abilBgC) setInputValue('#blk2Color', abilBgC);
+      if (typeof abilBgA === 'number') setAlpha('#blk2Alpha', abilBgA);
+      // Galleria GIF: filtro automatico se presente un bucket con lo stesso nome
+      if (GIF_LIB && S.name && GIF_LIB[S.name]) {
+        setInputValue('#gifCharFilter', S.name);
+      }
+      update();
+    }
+    function applySheetColorsFromCharName(name) {
+      if (!name || !LIB[name]) return;
+      applySheetColorsFrom(LIB[name]);
+    }
+
     function openLibFile(input, assign) {
       input.addEventListener('change', async e => {
         const f = e.target.files?.[0]; if (!f) return;
@@ -358,7 +403,11 @@
           assign(obj || {});
           refreshCharSelects();
           const first = Object.keys(LIB)[0] || '';
-          if (first) { el('#charSelect').value = first; el('#charName').value = first; }
+          if (first) {
+            el('#charSelect').value = first;
+            el('#charName').value = first;
+            applySheetColorsFromCharName(first);
+          }
           alert('File JSON caricato.');
         } catch (err) { alert('Errore JSON: ' + err.message); }
         e.target.value = '';
@@ -403,12 +452,14 @@
       const S = LIB[k];
       renderPickLists(S);
       el('#pickCaption').textContent = `Da: ${k} — seleziona più voci e inserisci in uno dei blocchi`;
+      // applica automaticamente i colori principali
+      applySheetColorsFrom(S);
       el('#pickModal').classList.add('open'); el('#pickModal').setAttribute('aria-hidden', 'false');
     }
     function closePick() { el('#pickModal').classList.remove('open'); el('#pickModal').setAttribute('aria-hidden', 'true'); }
     el('#btnLoadChar').onclick = openPick; el('#closePick').onclick = closePick; el('#pickModal').addEventListener('click', e => { if (e.target === el('#pickModal')) closePick(); });
 
-    function stripLeadStar(s) { return (s || '').replace(/^\\s*[✦*]+\\s*/, ''); }
+    function stripLeadStar(s) { return (s || '').replace(/^\s*[✦*]+\s*/, ''); }
     function applyPicked(toEditor) {
       const checks = [...document.querySelectorAll('.pickCheck:checked')];
       if (!checks.length) { alert('Seleziona almeno una voce.'); return; }
@@ -490,8 +541,7 @@
     function hasMeaningfulHtml(html) {
       const tmp = document.createElement('div');
       tmp.innerHTML = sanitizeInline(html || '');
-      // contiene testo visibile o almeno un LI o IMG?
-      const text = (tmp.textContent || '').replace(/\\s+/g,'').trim();
+      const text = (tmp.textContent || '').replace(/\s+/g,'').trim();
       return !!text || tmp.querySelector('li, img, p');
     }
 
@@ -514,7 +564,7 @@
 
       const headerId = `tecnica-${slug(title)}`;
       const header = `<div id="${headerId}" style="text-align:center;font-size:18px;margin-bottom:8px;font-weight:700;color:${tColor};text-transform:uppercase;letter-spacing:.8px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
-        <div style="flex:1;text-align:center;">&#10022; ${type} — <u style=\"color:${accent}\">${title}</u> — ${name}</div>
+        <div style="flex:1;text-align:center;">&#10022; ${type} — <u style="color:${accent}">${title}</u> — ${name}</div>
       </div>`;
 
       const block = (id, bg, titleText, contentHtml, collapsable = false, startClosed = false) => {
@@ -531,7 +581,6 @@
       };
 
       // blocco 1: Effetti (sempre visibile)
-      console.log(blk1)
       const b1Body = sanitizeInline(q1.root.innerHTML||'<p></p>');
       const b1 = `<details id="effetti" open style="margin:6px 6px;padding:8px 10px;border-radius:10px;border:1px solid ${accent};background:${blk1};">
         <summary style="cursor:pointer;font-weight:700;color:${tColor};font-size:12pt;display:flex;align-items:center;justify-content:space-between;">
@@ -569,14 +618,13 @@
         ${b2}
         ${line}${sep}
       </div>`;
-      return minify ? minify(full) : full;
+      return minified ? _minify(full) : full;
     }
 
     function bindPreviewCollapsers() {
       const prev = el('#preview');
       prev.querySelectorAll('.collapser').forEach(head => {
         head.addEventListener('click', (e) => {
-          // Se si clicca sul tasto ancora, non toggle
           if (e.target && e.target.classList && e.target.classList.contains('anchor')) return;
           const parent = head.closest('[id]');
           if (!parent) return;
@@ -591,10 +639,8 @@
       const h = (location.hash || '').replace('#','');
       if (!h) return;
       const prev = el('#preview');
-      // apri il body se è presente
       const body = prev.querySelector(`[data-body="${h}"]`);
       if (body) body.style.display = '';
-      // scrolla
       const target = prev.querySelector(`#${h}`) || prev.querySelector(`#tecnica-${slug(el('#tTitle').value)}`);
       if (target) target.scrollIntoView({ behavior:'smooth', block:'start' });
     }
@@ -609,7 +655,8 @@
     /* ===== bottoni ===== */
     el('#gen').onclick = update;
     el('#copy').onclick = async () => {
-      try { await navigator.clipboard.writeText(el('#code').value);
+      try {
+        await navigator.clipboard.writeText(el('#code').value);
         el('#copied').style.display = 'inline'; setTimeout(() => el('#copied').style.display = 'none', 1200);
       } catch (e) { alert('Copia non riuscita') }
     };
@@ -622,6 +669,12 @@
     /* ===== init ===== */
     q1.root.innerHTML = '<p></p>'; q2.root.innerHTML = '<p></p>';
     toggleValueInputs(); update(); refreshCharSelects();
+
+    // *** NUOVO: quando cambio personaggio applico i colori automaticamente
+    el('#charSelect').addEventListener('change', (e) => {
+      const name = e.target.value;
+      applySheetColorsFromCharName(name);
+    });
 
     // Se arriva un hash al load (es. #abilita), apri
     window.addEventListener('hashchange', openHashTarget);
