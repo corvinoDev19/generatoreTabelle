@@ -1,0 +1,44 @@
+{
+  "King": {
+    "name": "King",
+    "class": "Attacco",
+    "avatar": "https://i.pinimg.com/736x/a4/f2/14/a4f2147b2f7e38c63d633ffc601550f6.jpg",
+    "colors": {
+      "accent": "#990b0b",
+      "bg": "#0b0e12",
+      "fg": "#eaf7ff",
+      "side": "right"
+    },
+    "stats": {
+      "PV": 0,
+      "PE": 0,
+      "ATK": 0,
+      "DEF": 0,
+      "CTR": 0,
+      "SUP": 0,
+      "SAB": 0,
+      "EFF": 0,
+      "SLOT": 0
+    },
+    "styles": {
+      "abilBorder": {
+        "c": "#7feaff",
+        "a": 0.35
+      },
+      "abilBg": {
+        "c": "#7feaff",
+        "a": 0.06
+      },
+      "effBorder": {
+        "c": "#7feaff",
+        "a": 0.35
+      },
+      "effBg": {
+        "c": "#7feaff",
+        "a": 0.05
+      }
+    },
+    "abilities": [],
+    "effects": []
+  }
+}

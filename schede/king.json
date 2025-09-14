@@ -1,0 +1,90 @@
+{
+  "King": {
+    "name": "King",
+    "class": "Attacco",
+    "avatar": "https://i.pinimg.com/736x/a4/f2/14/a4f2147b2f7e38c63d633ffc601550f6.jpg",
+    "colors": {
+      "accent": "#990b0b",
+      "bg": "#0b0e12",
+      "fg": "#eaf7ff",
+      "side": "right"
+    },
+    "stats": {
+      "PV": 0,
+      "PE": 0,
+      "ATK": 0,
+      "DEF": 0,
+      "CTR": 0,
+      "SUP": 0,
+      "SAB": 0,
+      "EFF": 0,
+      "SLOT": 0
+    },
+    "styles": {
+      "abilBorder": {
+        "c": "#f25050",
+        "a": 0.79
+      },
+      "abilBg": {
+        "c": "#000000",
+        "a": 0.06
+      },
+      "effBorder": {
+        "c": "#000000",
+        "a": 0.35
+      },
+      "effBg": {
+        "c": "#000000",
+        "a": 0.05
+      }
+    },
+    "abilities": [
+      {
+        "type": "ability",
+        "title": "Runāria-zoku – Discendenza Lunarian",
+        "tag": "[x3]",
+        "html": "<p>Discendente di un popolo forgiato dal fuoco, l’utilizzatore vanta un corpo capace di generare fiamme a volontà, adattandosi e sopravvivendo in ogni ambiente. <span style=\"color: rgb(161, 0, 0);\">Può attivare o spegnere le proprie fiamme in qualsiasi momento, mutando radicalmente il suo stile di combattimento.&nbsp;Quando le fiamme sono attive, ogni sua azione viene potenziata dal valore SUP, sprigionando una forza naturale e continua. Inoltre, il suo corpo diventa intaccabile: ignora qualsiasi status e danni effetti collegati che potrebbe colpire un essere umano comune.&nbsp;Spegnendo volontariamente le fiamme, sacrifica la resistenza per ottenere un balzo di velocità, applicando il proprio valore SAB alle azioni del nemico. Quest’ultimo sarà costretto a reagire con tempismo estremo di fronte ai suoi assalti improvvisi.</span></p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#740202",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.25
+      }
+    ],
+    "effects": [
+      {
+        "type": "effect",
+        "title": "Fiamma Indomita",
+        "tag": "[SUP - Indotto]",
+        "html": "<p><span style=\"background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);\">Pagando 100 PE, l’utilizzatore adatta la propria volontà al nemico, ignorando condizioni, limiti e svantaggi. La sua forza si impone, anche contro chi dovrebbe sovrastarlo.</span></p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#740202",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.25
+      },
+      {
+        "type": "effect",
+        "title": "Forgia dell’Ambizione",
+        "tag": "[SUP - Indotto]",
+        "html": "<p>Come estrema difesa, l’utilizzatore può triplicare il consumo base PE per forgiare il proprio SUP in forma di Armatura estrema, capace di resistere anche agli impatti più distruttivi.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#740202",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.25
+      },
+      {
+        "type": "effect",
+        "title": "",
+        "tag": "",
+        "html": "<p><br></p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#740202",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.25
+      }
+    ]
+  }
+}
