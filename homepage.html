@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Generatore Elite Four → Responsive + Tema completo + Snippet ForumFree</title>
+    <style>
+        :root {
+            color-scheme: dark
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: #0a0f14;
+            color: #eaf7ff;
+            font: 500 14px/1.45 Inter, Segoe UI, Roboto, Arial, sans-serif
+        }
+
+        .wrap {
+            max-width: 1200px;
+            margin: 24px auto;
+            padding: 0 16px
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 22px;
+            letter-spacing: .4px
+        }
+
+        .muted {
+            color: #cfeaff;
+            opacity: .85;
+            font-size: 12px
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1.1fr .9fr
+        }
+
+        @media (max-width:1100px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .card {
+            background: #0f1620;
+            border: 1px solid #1f2a3a;
+            border-radius: 14px;
+            box-shadow: 0 1px 0 #0a0f14 inset
+        }
+
+        .card h2 {
+            margin: 0;
+            padding: 12px 14px;
+            border-bottom: 1px solid #1f2a3a;
+            font-size: 16px;
+            letter-spacing: .3px
+        }
+
+        .card .body {
+            padding: 12px 14px
+        }
+
+        label {
+            font-size: 12px;
+            color: #9fd7ff;
+            display: block;
+            margin: 8px 0 4px
+        }
+
+        input[type="text"],
+        input[type="url"],
+        input[type="color"],
+        select {
+            width: 100%;
+            background: #0b121b;
+            border: 1px solid #243245;
+            color: #eaf7ff;
+            border-radius: 10px;
+            padding: 9px 10px;
+            outline: none;
+            transition: box-shadow .15s, border-color .15s
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #345071;
+            box-shadow: 0 0 0 3px rgba(127, 234, 255, .08)
+        }
+
+        .row {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr 1fr
+        }
+
+        .row3 {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 1fr 1fr 1fr
+        }
+
+        .btns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px
+        }
+
+        button {
+            background: #132034;
+            color: #eaf7ff;
+            border: 1px solid #2b3a4f;
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600
+        }
+
+        button.primary {
+            background: #112236;
+            border-color: #3a658a
+        }
+
+        button.warn {
+            background: #30181a;
+            border-color: #7a2f3a
+        }
+
+        .mini {
+            font-size: 12px;
+            padding: 6px 10px
+        }
+
+        .list {
+            display: grid;
+            gap: 12px
+        }
+
+        .slot {
+            border: 1px dashed #2b3a4f;
+            border-radius: 12px;
+            padding: 10px
+        }
+
+        .slot .head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 8px
+        }
+
+        .slot .head b {
+            font-size: 13px
+        }
+
+        .slot .head .grp {
+            display: flex;
+            gap: 6px
+        }
+
+        .preview-code {
+            background: #0b121b;
+            border: 1px solid #243245;
+            border-radius: 10px;
+            padding: 10px;
+            overflow: auto;
+            max-height: 460px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.35
+        }
+
+        .mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace
+        }
+
+        .simbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 6px;
+            flex-wrap: wrap
+        }
+
+        input[type="range"] {
+            width: 220px
+        }
+
+        .stage {
+            background: #0b121b;
+            border: 1px solid #243245;
+            border-radius: 12px;
+            padding: 12px;
+            overflow: auto
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <h1>Generatore “Elite Four” → Responsive + Anteprima live + Tema completo</h1>
+        <p class="muted">Modifica contenuti e tema, guarda l’anteprima live, poi copia lo snippet responsive (solo CSS
+            inline) per ForumFree. Salva/riapri in JSON.</p>
+
+        <div class="grid">
+            <div class="card">
+                <h2>Impostazioni contenuto</h2>
+                <div class="body">
+                    <label for="title">Titolo</label>
+                    <input id="title" type="text" placeholder="Elite Four">
+                    <div class="row">
+                        <div>
+                            <label for="note">Testo sotto</label>
+                            <input id="note" type="text" placeholder="Clicca un personaggio per aprire la scheda">
+                        </div>
+                        <div>
+                            <label for="open">Apri di default</label>
+                            <div
+                                style="display:flex;align-items:center;gap:8px;border:1px solid #243245;background:#0b121b;border-radius:10px;padding:8px 10px">
+                                <input id="open" type="checkbox" checked><span class="muted">details aperto</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr style="border:0;border-top:1px solid #1f2a3a;margin:12px 0">
+                    <div class="btns">
+                        <button class="primary mini" id="add">+ Aggiungi personaggio</button>
+                        <button class="mini" id="saveLocal">Salva su questo browser</button>
+                        <button class="mini" id="loadLocal">Riapri da questo browser</button>
+                        <button class="warn mini" id="clearLocal">Pulisci memoria locale</button>
+                    </div>
+                    <div class="btns">
+                        <button class="mini" id="exportJson">Scarica JSON</button>
+                        <input id="importFile" type="file" accept="application/json" style="display:none">
+                        <button class="mini" id="importJson">Carica JSON</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Tema (colori, sfondo, font, titolo)</h2>
+                <div class="body">
+                    <div class="row3">
+                        <div>
+                            <label>Font family</label>
+                            <input id="theme_font" type="text" placeholder='Inter, Segoe UI, Roboto, Arial, sans-serif'>
+                        </div>
+                        <div>
+                            <label>Dimensione titolo</label>
+                            <select id="theme_titleSize">
+                                <option value="20">20px</option>
+                                <option value="22" selected>22px</option>
+                                <option value="24">24px</option>
+                                <option value="26">26px</option>
+                                <option value="28">28px</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Colore titolo</label>
+                            <input id="theme_titleColor" type="color" value="#eaf7ff">
+                        </div>
+                    </div>
+
+                    <div class="row3" style="margin-top:8px">
+                        <div>
+                            <label>Bordo esterno</label>
+                            <input id="theme_border" type="color" value="#2b3a4f">
+                        </div>
+                        <div>
+                            <label>Sfondo pannello (alto)</label>
+                            <input id="theme_bg1" type="color" value="#0c1622">
+                        </div>
+                        <div>
+                            <label>Sfondo pannello (basso)</label>
+                            <input id="theme_bg2" type="color" value="#0a1017">
+                        </div>
+                    </div>
+
+                    <div class="row3" style="margin-top:8px">
+                        <div>
+                            <label>Badge +/− sfondo</label>
+                            <input id="theme_badgeBg" type="color" value="#10151d">
+                        </div>
+                        <div>
+                            <label>Badge bordo</label>
+                            <input id="theme_badgeBorder" type="color" value="#2b3a4f">
+                        </div>
+                        <div>
+                            <label>Colore testo badge</label>
+                            <input id="theme_badgeInk" type="color" value="#cfeaff">
+                        </div>
+                    </div>
+
+                    <div class="row3" style="margin-top:8px">
+                        <div>
+                            <label>Sfondo card (alto)</label>
+                            <input id="theme_card1" type="color" value="#0f1a24">
+                        </div>
+                        <div>
+                            <label>Sfondo card (basso)</label>
+                            <input id="theme_card2" type="color" value="#0b1118">
+                        </div>
+                        <div>
+                            <label>Testo note</label>
+                            <input id="theme_note" type="color" value="#cfeaff">
+                        </div>
+                    </div>
+
+                    <hr style="border:0;border-top:1px solid #1f2a3a;margin:12px 0">
+                    <div class="simbar">
+                        <span class="muted">Larghezza anteprima:</span>
+                        <input id="widthRange" type="range" min="280" max="1200" step="10" value="980">
+                        <span class="muted"><span id="widthLabel">980</span> px</span>
+                        <button class="mini" id="wMobile">Mobile</button>
+                        <button class="mini" id="wTablet">Tablet</button>
+                        <button class="mini" id="wDesktop">Desktop</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+            <h2>Anteprima live</h2>
+            <div class="body">
+                <div id="stage" class="stage"><!-- live render --></div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+            <h2>Personaggi</h2>
+            <div class="body">
+                <div id="list" class="list"></div>
+                <p class="muted" style="margin-top:6px">Suggerimento: i colori personaggio definiscono bordo avatar,
+                    bagliore e nome.</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+            <h2>Snippet HTML per ForumFree (responsive, inline CSS)</h2>
+            <div class="body">
+                <div class="btns" style="justify-content:flex-end">
+                    <button class="primary mini" id="copyHtml">Copia snippet ForumFree</button>
+                </div>
+                <div id="previewCode" class="preview-code"></div>
+            </div>
+        </div>
+
+        <p class="muted" style="margin:14px 0 40px">Il layout è **responsive**: le card usano <span
+                class="mono">flex-wrap</span> e <span class="mono">flex-basis</span> con <span
+                class="mono">clamp()</span>, andando a capo quando lo spazio è poco.</p>
+    </div>
+
+    <script>
+        const el = s => document.querySelector(s);
+        const els = s => Array.from(document.querySelectorAll(s));
+
+        const DEFAULT_THEME = {
+            font: "Inter, Segoe UI, Roboto, Arial, sans-serif",
+            titleSize: 22,
+            titleColor: "#eaf7ff",
+            border: "#2b3a4f",
+            bg1: "#0c1622",
+            bg2: "#0a1017",
+            badgeBg: "#10151d",
+            badgeBorder: "#2b3a4f",
+            badgeInk: "#cfeaff",
+            card1: "#0f1a24",
+            card2: "#0b1118",
+            note: "#cfeaff"
+        };
+
+        const DEFAULTS = {
+            title: "Elite Four",
+            note: "Clicca un personaggio per aprire la scheda",
+            open: true,
+            theme: { ...DEFAULT_THEME },
+            people: [
+                { name: "Rob Lucci", link: "?t=78124302#entry667791705", img: "https://i.imgur.com/4yLS6Nw.jpeg", color: "#f4c603" },
+                { name: "Dracule Mihawk", link: "?t=78124302#entry673242318", img: "https://i.imgur.com/0GqrD9h.jpeg", color: "#62fcbe" },
+                { name: "God Eneru", link: "?t=78124302#entry673604263", img: "https://i.pinimg.com/1200x/60/c1/96/60c196574b49d3cfde252f64797a8808.jpg", color: "#0099ff" },
+                { name: "Vinsmoke Sanji", link: "?t=78124302#entry679291363", img: "https://i.pinimg.com/1200x/aa/ad/e8/aaade8cb799596bf058d3f5af942bc86.jpg", color: "#e3a21c" }
+            ]
+        };
+
+        // ---- util & migrazione ----
+        const HEX6 = /^#([0-9a-fA-F]{6})$/;
+        function toHex6OrNull(v) {
+            if (!v) return null;
+            let s = String(v).trim();
+            if (/^#([0-9a-fA-F]{3})$/.test(s)) {
+                const m = s.slice(1).split('').map(c => c + c).join('');
+                return '#' + m;
+            }
+            return HEX6.test(s) ? s.toLowerCase() : null;
+        }
+        function escapeHtml(s) { return String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m])) }
+        function hexToRgba(hex, a) {
+            let h = (hex || '').replace('#', '').trim(); if (h.length === 3) { h = h.split('').map(c => c + c).join('') }
+            const r = parseInt(h.slice(0, 2) || '00', 16), g = parseInt(h.slice(2, 4) || '00', 16), b = parseInt(h.slice(4, 6) || '00', 16);
+            return `rgba(${isNaN(r) ? 0 : r},${isNaN(g) ? 0 : g},${isNaN(b) ? 0 : b},${a})`;
+        }
+        // compatta HTML su una riga
+        function toOneLine(html) {
+            return String(html).replace(/\s*\n+\s*/g, '').replace(/>\s+</g, '><').replace(/\s{2,}/g, ' ').trim();
+        }
+
+        // normalizzazione stato (anche vecchi JSON)
+        function normalizeState(s) {
+            const out = { ...DEFAULTS, ...(s || {}) };
+            out.theme = { ...DEFAULT_THEME, ...(s && s.theme ? s.theme : {}) };
+            ['titleColor', 'border', 'bg1', 'bg2', 'badgeBg', 'badgeBorder', 'badgeInk', 'card1', 'card2', 'note']
+                .forEach(k => {
+                    const ok = toHex6OrNull(out.theme[k]);
+                    if (!ok) out.theme[k] = DEFAULT_THEME[k];
+                });
+            if (typeof out.title !== 'string') out.title = DEFAULTS.title;
+            if (typeof out.note !== 'string') out.note = DEFAULTS.note;
+            out.open = !!out.open;
+            out.people = Array.isArray(out.people) ? out.people : [];
+            out.people = out.people.map(p => {
+                const colorOk = toHex6OrNull(p?.color) || '#7feaff';
+                return {
+                    name: typeof p?.name === 'string' ? p.name : 'Senza nome',
+                    link: typeof p?.link === 'string' ? p.link : '#',
+                    img: typeof p?.img === 'string' ? p.img : '',
+                    color: colorOk
+                };
+            });
+            return out;
+        }
+
+        let state = normalizeState(DEFAULTS);
+
+        // ---- builder snippet ----
+        function makeCardInline(p, t) {
+            t = t || state.theme || DEFAULT_THEME;
+            const col = (p.color || '#7feaff').toLowerCase();
+            const name = escapeHtml(p.name || '');
+            const link = escapeHtml(p.link || '#');
+            const img = escapeHtml(p.img || '');
+            return `<a href="${link}" style="box-sizing:border-box;display:block;flex:1 1 clamp(160px,25%,260px);max-width:320px;padding:8px;text-decoration:none;font-family:${t.font};"><div style="border:1px solid ${t.border};border-radius:18px;background:linear-gradient(180deg,${t.card1},${t.card2});box-shadow:0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(127,234,255,.06) inset;padding:12px 12px 14px;transition:transform .15s ease, box-shadow .15s ease;text-align:center;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 28px rgba(127,234,255,.18),0 0 0 1px rgba(127,234,255,.18) inset';" onmouseout ="this.style.transform='';this.style.boxShadow='0 6px 18px rgba(0,0,0,.35),0 0 0 1px rgba(127,234,255,.06) inset';"><span style="display:inline-block;border-radius:999px;padding:3px;background:${col};box-shadow:0 0 0 1px ${hexToRgba(col, .35)},0 0 18px ${hexToRgba(col, .22)} inset;"><img src="${img}" alt="${name}" style="width:clamp(110px,20vw,160px);height:clamp(110px,20vw,160px);display:block;border-radius:50%;border:2px solid ${col};object-fit:cover;filter:saturate(1.03);transition:filter .15s ease, box-shadow .15s ease;" onmouseover="this.style.filter='saturate(1.15)';this.style.boxShadow='0 0 16px ${hexToRgba(col, .35)}';" onmouseout="this.style.filter='saturate(1.03)';this.style.boxShadow='';"></span><b style="display:block;margin-top:8px;color:${col};font-size:15px;letter-spacing:.3px;">${name}</b></div></a>`;
+        }
+
+        function buildSnippet() {
+            const t = state.theme || DEFAULT_THEME;
+            const openAttr = state.open ? " open" : "";
+            const title = escapeHtml(state.title || '');
+            const note = escapeHtml(state.note || '');
+            const cards = state.people.map(p => makeCardInline(p, t)).join('');
+            // badge + ripristinato
+            const badge = ``;
+            return `<details${openAttr} style="margin:12px 0;border:1px solid ${t.border};border-radius:16px;padding:10px;background:linear-gradient(180deg,${t.bg1},${t.bg2});font-family:${t.font};"><summary style="display:flex;justify-content:center;align-items:center;gap:10px;cursor:pointer;color:${t.titleColor};font-weight:800;font-size:${t.titleSize}px;padding:8px 10px;letter-spacing:.6px;list-style:none;">${title}</summary><div style="padding:10px;text-align:center;"><div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:14px;width:100%;margin:0 auto;">${cards}</div><p style="margin:10px 0 0;color:${t.note};font-size:11px;opacity:.9;">${note}</p></div></details>`;
+        }
+
+        // ---- UI render ----
+        function renderList() {
+            const list = el('#list'); if (!list) return;
+            list.innerHTML = '';
+            state.people.forEach((p, i) => {
+                const colorText = escapeHtml(p.color);
+                const colorSafe = toHex6OrNull(p.color) || '#7feaff';
+                const div = document.createElement('div'); div.className = 'slot';
+                div.innerHTML = `
+      <div class="head">
+        <b>#${i + 1} — <span class="mono">${escapeHtml(p.name || 'Senza nome')}</span></b>
+        <div class="grp">
+          <button class="mini" data-act="up" data-i="${i}">↑</button>
+          <button class="mini" data-act="down" data-i="${i}">↓</button>
+          <button class="mini warn" data-act="del" data-i="${i}">Elimina</button>
+        </div>
+      </div>
+      <div class="row3">
+        <div>
+          <label>Nome</label>
+          <input type="text" data-field="name" data-i="${i}" value="${escapeHtml(p.name)}">
+        </div>
+        <div>
+          <label>Colore</label>
+          <div class="row" style="grid-template-columns:110px 1fr">
+            <input type="color" data-field="colorPicker" data-i="${i}" value="${colorSafe}">
+            <input type="text"  data-field="colorText"   data-i="${i}" value="${colorText}" placeholder="#rrggbb">
+          </div>
+        </div>
+        <div>
+          <label>Link</label>
+          <input type="text" data-field="link" data-i="${i}" value="${escapeHtml(p.link)}">
+        </div>
+      </div>
+      <label>URL immagine</label>
+      <input type="url" data-field="img" data-i="${i}" value="${escapeHtml(p.img)}">
+    `;
+                list.appendChild(div);
+            });
+        }
+
+        function renderCodeAndLive() {
+            const codeBox = el('#previewCode');
+            const stage = el('#stage');
+            if (!codeBox || !stage) return;
+            const htmlRaw = buildSnippet();
+            const htmlOne = toOneLine(htmlRaw);
+            codeBox.textContent = htmlOne; // UNA SOLA LINEA nel box
+            const range = el('#widthRange');
+            const w = range ? (range.value + 'px') : '980px';
+            stage.innerHTML = `<div style="max-width:${w};margin:0 auto;">${htmlRaw}</div>`; // anteprima leggibile
+            const wLbl = el('#widthLabel'); if (wLbl && range) wLbl.textContent = range.value;
+        }
+
+        // ---- wiring eventi ----
+        function wireDynamic() {
+            els('input[data-field="name"],input[data-field="link"],input[data-field="img"]').forEach(inp => {
+                inp.oninput = e => {
+                    const i = +e.target.getAttribute('data-i');
+                    const f = e.target.getAttribute('data-field');
+                    state.people[i][f] = e.target.value;
+                    renderList(); wireDynamic(); renderCodeAndLive(); autosave();
+                };
+            });
+
+            els('input[data-field="colorPicker"]').forEach(inp => {
+                inp.oninput = e => {
+                    const i = +e.target.getAttribute('data-i');
+                    const val = e.target.value; // sempre valido
+                    state.people[i].color = val;
+                    const txt = document.querySelector(`input[data-field="colorText"][data-i="${i}"]`);
+                    if (txt) txt.value = val;
+                    renderCodeAndLive(); autosave();
+                };
+            });
+
+            els('input[data-field="colorText"]').forEach(inp => {
+                inp.oninput = e => {
+                    const i = +e.target.getAttribute('data-i');
+                    const raw = e.target.value;
+                    state.people[i].color = raw;
+                    const ok = toHex6OrNull(raw);
+                    if (ok) {
+                        const pick = document.querySelector(`input[data-field="colorPicker"][data-i="${i}"]`);
+                        if (pick && pick.value !== ok) pick.value = ok;
+                        if (raw !== ok) e.target.value = ok;
+                    }
+                    renderCodeAndLive(); autosave();
+                };
+                inp.onblur = e => {
+                    const i = +e.target.getAttribute('data-i');
+                    const ok = toHex6OrNull(state.people[i].color);
+                    if (!ok) {
+                        const fallback = '#7feaff';
+                        state.people[i].color = fallback;
+                        e.target.value = fallback;
+                        const pick = document.querySelector(`input[data-field="colorPicker"][data-i="${i}"]`);
+                        if (pick) pick.value = fallback;
+                        renderList(); wireDynamic(); renderCodeAndLive(); autosave();
+                    }
+                };
+            });
+
+            els('button[data-act]').forEach(btn => {
+                btn.onclick = () => {
+                    const i = +btn.getAttribute('data-i');
+                    const act = btn.getAttribute('data-act');
+                    if (act === 'del') { state.people.splice(i, 1); }
+                    if (act === 'up' && i > 0) { [state.people[i - 1], state.people[i]] = [state.people[i], state.people[i - 1]]; }
+                    if (act === 'down' && i < state.people.length - 1) { [state.people[i + 1], state.people[i]] = [state.people[i], state.people[i + 1]]; }
+                    renderList(); wireDynamic(); renderCodeAndLive(); autosave();
+                };
+            });
+        }
+
+        // ---- bind tema + contenuti + pulsanti ----
+        function bindThemeInputs() {
+            const t = state.theme = { ...DEFAULT_THEME, ...(state.theme || {}) };
+            const setVal = (id, val) => { const n = el(id); if (n) n.value = val; };
+            setVal('#theme_font', t.font);
+            setVal('#theme_titleSize', String(t.titleSize));
+            setVal('#theme_titleColor', t.titleColor);
+            setVal('#theme_border', t.border);
+            setVal('#theme_bg1', t.bg1);
+            setVal('#theme_bg2', t.bg2);
+            setVal('#theme_badgeBg', t.badgeBg);
+            setVal('#theme_badgeBorder', t.badgeBorder);
+            setVal('#theme_badgeInk', t.badgeInk);
+            setVal('#theme_card1', t.card1);
+            setVal('#theme_card2', t.card2);
+            setVal('#theme_note', t.note);
+
+            const on = () => {
+                t.font = (el('#theme_font')?.value) || t.font;
+                t.titleSize = +(el('#theme_titleSize')?.value) || DEFAULT_THEME.titleSize;
+                t.titleColor = (el('#theme_titleColor')?.value) || t.titleColor;
+                t.border = (el('#theme_border')?.value) || t.border;
+                t.bg1 = (el('#theme_bg1')?.value) || t.bg1;
+                t.bg2 = (el('#theme_bg2')?.value) || t.bg2;
+                t.badgeBg = (el('#theme_badgeBg')?.value) || t.badgeBg;
+                t.badgeBorder = (el('#theme_badgeBorder')?.value) || t.badgeBorder;
+                t.badgeInk = (el('#theme_badgeInk')?.value) || t.badgeInk;
+                t.card1 = (el('#theme_card1')?.value) || t.card1;
+                t.card2 = (el('#theme_card2')?.value) || t.card2;
+                t.note = (el('#theme_note')?.value) || t.note;
+                renderCodeAndLive(); autosave();
+            };
+            ['#theme_font', '#theme_titleSize', '#theme_titleColor', '#theme_border', '#theme_bg1', '#theme_bg2', '#theme_badgeBg', '#theme_badgeBorder', '#theme_badgeInk', '#theme_card1', '#theme_card2', '#theme_note']
+                .forEach(id => { const n = el(id); if (n) n.addEventListener('input', on); });
+        }
+
+        function bindGeneral() {
+            // contenuto base
+            const tIn = el('#title'); if (tIn) { tIn.value = state.title; tIn.oninput = e => { state.title = e.target.value; renderCodeAndLive(); autosave(); }; }
+            const nIn = el('#note'); if (nIn) { nIn.value = state.note; nIn.oninput = e => { state.note = e.target.value; renderCodeAndLive(); autosave(); }; }
+            const op = el('#open'); if (op) { op.checked = state.open; op.onchange = e => { state.open = !!e.target.checked; renderCodeAndLive(); autosave(); }; }
+
+            // add person
+            const add = el('#add'); if (add) { add.onclick = () => { state.people.push({ name: 'Nuovo', link: '#', img: '', color: '#7feaff' }); renderList(); wireDynamic(); renderCodeAndLive(); autosave(); }; }
+
+            // localStorage save/load/clear
+            const saveLocal = el('#saveLocal'); if (saveLocal) { saveLocal.onclick = () => { localStorage.setItem('eliteFourDesigner', JSON.stringify(state)); toast('Salvato nella memoria del browser'); }; }
+            const loadLocal = el('#loadLocal'); if (loadLocal) { loadLocal.onclick = () => { const raw = localStorage.getItem('eliteFourDesigner'); if (!raw) return toast('Nessun salvataggio trovato'); try { state = normalizeState(JSON.parse(raw)); } catch { return toast('JSON locale non valido'); } syncAll(); toast('Caricato dalla memoria del browser'); }; }
+            const clearLocal = el('#clearLocal'); if (clearLocal) { clearLocal.onclick = () => { localStorage.removeItem('eliteFourDesigner'); toast('Memoria locale pulita'); }; }
+
+            // export/import JSON
+            const exportBtn = el('#exportJson'); if (exportBtn) { exportBtn.onclick = () => { const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' }); const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'elite-four.json'; a.click(); URL.revokeObjectURL(a.href); }; }
+            const importBtn = el('#importJson'); const importFile = el('#importFile');
+            if (importBtn && importFile) {
+                importBtn.onclick = () => importFile.click();
+                importFile.onchange = e => {
+                    const f = e.target.files?.[0]; if (!f) return;
+                    const rd = new FileReader();
+                    rd.onload = () => {
+                        try { state = normalizeState(JSON.parse(String(rd.result))); syncAll(); toast('JSON importato'); }
+                        catch { toast('JSON non valido'); }
+                        importFile.value = '';
+                    };
+                    rd.readAsText(f);
+                };
+            }
+
+            // copia snippet (su una riga)
+            const copyBtn = el('#copyHtml');
+            if (copyBtn) {
+                copyBtn.onclick = async () => {
+                    const txt = toOneLine(buildSnippet());
+                    try { await navigator.clipboard.writeText(txt); toast('Snippet copiato'); }
+                    catch {
+                        const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta);
+                        ta.select(); document.execCommand('copy'); ta.remove(); toast('Snippet copiato (fallback)');
+                    }
+                };
+            }
+
+            // anteprima width + preset
+            const range = el('#widthRange'); if (range) { range.oninput = () => renderCodeAndLive(); }
+            const wM = el('#wMobile'); if (wM && range) { wM.onclick = () => { range.value = 360; renderCodeAndLive(); }; }
+            const wT = el('#wTablet'); if (wT && range) { wT.onclick = () => { range.value = 768; renderCodeAndLive(); }; }
+            const wD = el('#wDesktop'); if (wD && range) { wD.onclick = () => { range.value = 980; renderCodeAndLive(); }; }
+        }
+
+        function syncAll() {
+            state = normalizeState(state);
+            bindThemeInputs();
+            renderList(); wireDynamic(); renderCodeAndLive();
+        }
+
+        // autosave + toast
+        let saveTimer = null;
+        function autosave() { clearTimeout(saveTimer); saveTimer = setTimeout(() => localStorage.setItem('eliteFourDesigner_autosave', JSON.stringify(state)), 250); }
+        function toast(msg) {
+            const t = document.createElement('div');
+            t.textContent = msg;
+            t.style.cssText = "position:fixed;left:50%;top:18px;transform:translateX(-50%);background:#102032;color:#eaf7ff;border:1px solid #2b3a4f;padding:8px 12px;border-radius:10px;z-index:9999;box-shadow:0 6px 20px rgba(0,0,0,.35);font-weight:600";
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.transition = 'opacity .3s'; t.style.opacity = '0'; setTimeout(() => t.remove(), 300) }, 1200);
+        }
+
+        // init
+        (function () {
+            const raw = localStorage.getItem('eliteFourDesigner_autosave');
+            if (raw) { try { state = normalizeState(JSON.parse(raw)) } catch { } }
+            bindGeneral(); syncAll();
+        })();
+    </script>
+
+
+
+</body>
+
+</html>

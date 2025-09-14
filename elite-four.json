@@ -1,0 +1,33 @@
+{
+  "title": "Rivoluzionari",
+  "note": "Clicca un personaggio per aprire la scheda",
+  "open": true,
+  "theme": {
+    "font": "Inter, Segoe UI, Roboto, Arial, sans-serif",
+    "titleSize": 26,
+    "titleColor": "#ffffff",
+    "border": "#000000",
+    "bg1": "#000000",
+    "bg2": "#290000",
+    "badgeBg": "#2525b1",
+    "badgeBorder": "#b8d5ff",
+    "badgeInk": "#475662",
+    "card1": "#500724",
+    "card2": "#000000",
+    "note": "#d4d4d4"
+  },
+  "people": [
+    {
+      "name": "Kuzan",
+      "link": "https://dungeonsduels.forumfree.it/?t=80643570#entry679275495",
+      "img": "https://i.pinimg.com/736x/d5/c0/f9/d5c0f9b8019f3bb6a1d9e2624acff8d5.jpg",
+      "color": "#249ef0"
+    },
+    {
+      "name": "King",
+      "link": "?t=78124302#entry673604263",
+      "img": "https://i.pinimg.com/736x/a4/f2/14/a4f2147b2f7e38c63d633ffc601550f6.jpg",
+      "color": "#880707"
+    }
+  ]
+}
