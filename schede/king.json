@@ -10,19 +10,19 @@
       "side": "right"
     },
     "stats": {
-      "PV": 0,
-      "PE": 0,
-      "ATK": 0,
-      "DEF": 0,
-      "CTR": 0,
-      "SUP": 0,
-      "SAB": 0,
-      "EFF": 0,
-      "SLOT": 0
+      "PV": 750,
+      "PE": 2500,
+      "ATK": 1250,
+      "DEF": 500,
+      "CTR": 500,
+      "SUP": 2500,
+      "SAB": 500,
+      "EFF": 250,
+      "SLOT": 1
     },
     "styles": {
       "abilBorder": {
-        "c": "#f25050",
+        "c": "#8a0a0a",
         "a": 0.79
       },
       "abilBg": {
@@ -41,14 +41,47 @@
     "abilities": [
       {
         "type": "ability",
-        "title": "Runāria-zoku – Discendenza Lunarian",
-        "tag": "[x3]",
-        "html": "<p>Discendente di un popolo forgiato dal fuoco, l’utilizzatore vanta un corpo capace di generare fiamme a volontà, adattandosi e sopravvivendo in ogni ambiente. <span style=\"color: rgb(161, 0, 0);\">Può attivare o spegnere le proprie fiamme in qualsiasi momento, mutando radicalmente il suo stile di combattimento.&nbsp;Quando le fiamme sono attive, ogni sua azione viene potenziata dal valore SUP, sprigionando una forza naturale e continua. Inoltre, il suo corpo diventa intaccabile: ignora qualsiasi status e danni effetti collegati che potrebbe colpire un essere umano comune.&nbsp;Spegnendo volontariamente le fiamme, sacrifica la resistenza per ottenere un balzo di velocità, applicando il proprio valore SAB alle azioni del nemico. Quest’ultimo sarà costretto a reagire con tempismo estremo di fronte ai suoi assalti improvvisi.</span></p>",
+        "title": "Custode della Fiamma Divina",
+        "tag": "[x2]",
+        "html": "<p>Quando le fiamme si accendono, il corpo di King incarna il simbolo della stirpe Lunaria<span style=\"color: rgb(161, 0, 0);\">. Ogni sua azione viene potenziata dall’immissione diretta del valore </span><strong style=\"color: rgb(161, 0, 0);\">SUP</strong><span style=\"color: rgb(161, 0, 0);\"> nel corpo, permettendo alle sue tecniche di sprigionare </span><strong style=\"color: rgb(161, 0, 0);\">nuovi parametri reali e concreti</strong><span style=\"color: rgb(161, 0, 0);\"> al momento dell’esecuzione. Il fuoco divino che lo avvolge lo rende </span><strong style=\"color: rgb(161, 0, 0);\">intaccabile</strong><span style=\"color: rgb(161, 0, 0);\">, ignorando status e danni effetti che potrebbero piegare qualsiasi altro essere vivente.</span></p>",
         "tColor": "#8a0a0a",
         "bColor": "#740202",
         "bA": 0.35,
+        "bgColor": "#8a0a0a",
+        "bgA": 0.1
+      },
+      {
+        "type": "ability",
+        "title": "Eclissi di Fiamme",
+        "tag": "",
+        "html": "<p>Spegnendo le proprie fiamme, King rinuncia alla resistenza della stirpe Lunaria per sprigionare un impulso di velocità devastante.<span style=\"color: rgb(161, 0, 0);\"> Il suo moveset, fondato su agilità e movimenti perfetti, diventa talmente evasivo da eludere qualsiasi caratteristica delle tecniche avversarie. In questa forma, durante i contrasti, King interagisce </span><strong style=\"color: rgb(161, 0, 0);\">solo con i parametri nemici</strong><span style=\"color: rgb(161, 0, 0);\">, ignorando e superando ogni altra caratteristica.</span></p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
         "bgColor": "#000000",
-        "bgA": 0.25
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "Kenbun Shoku – Istinto Precognitivo",
+        "tag": "[x2]",
+        "html": "<p>L’utilizzatore affina i sensi a tal punto da percepire e prevedere ogni intenzione, pensiero e movimento dell’avversario, agendo sempre un istante prima che il nemico possa reagire.<span style=\"color: rgb(68, 68, 68);\"> In attacco, le tecniche ottengono lo status Anti-Contrattacco. Inoltre, consente di contrastare ed equilibrare azioni che prevedono di anticipare, interagire in fase preliminare o in momenti antecedenti alle proprie azioni, applicando le giuste contromisure.&nbsp;[x2]</span></p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8b0e0e",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
+      },
+      {
+        "type": "ability",
+        "title": "Busōshoku no Haki – Ambizione Corazzata",
+        "tag": "",
+        "html": "<p>Espande la carica base delle proprie azioni, saturandole con la sua forza di volontà. <span style=\"background-color: rgba(159, 9, 114, 0.1); color: rgb(107, 36, 178);\">In questo stato, ogni tecnica si attiva con la quantità esatta e necessaria di energia, ignorando condizioni, limiti o conseguenze.&nbsp;</span></p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
       }
     ],
     "effects": [
@@ -56,7 +89,7 @@
         "type": "effect",
         "title": "Fiamma Indomita",
         "tag": "[SUP - Indotto]",
-        "html": "<p><span style=\"background-color: rgb(0, 0, 0); color: rgb(255, 255, 255);\">Pagando 100 PE, l’utilizzatore adatta la propria volontà al nemico, ignorando condizioni, limiti e svantaggi. La sua forza si impone, anche contro chi dovrebbe sovrastarlo.</span></p>",
+        "html": "<p>Pagando 100 PE, l’utilizzatore adatta la propria volontà al nemico, ignorando condizioni, limiti e svantaggi. La sua forza si impone, anche contro chi dovrebbe sovrastarlo.</p>",
         "tColor": "#8a0a0a",
         "bColor": "#740202",
         "bA": 0.35,
@@ -67,7 +100,7 @@
         "type": "effect",
         "title": "Forgia dell’Ambizione",
         "tag": "[SUP - Indotto]",
-        "html": "<p>Come estrema difesa, l’utilizzatore può triplicare il consumo base PE per forgiare il proprio SUP in forma di Armatura estrema, capace di resistere anche agli impatti più distruttivi.</p>",
+        "html": "<p>Come estrema difesa, l’utilizzatore può raddoppiare il consumo base PE per forgiare il proprio SUP in un nuovo parametro.</p>",
         "tColor": "#8a0a0a",
         "bColor": "#740202",
         "bA": 0.35,
@@ -76,14 +109,80 @@
       },
       {
         "type": "effect",
-        "title": "",
-        "tag": "",
-        "html": "<p><br></p>",
+        "title": "Lama dell’Apocalisse",
+        "tag": "[ATK - Inseguimento]",
+        "html": "<p>King concentra le fiamme nella spada, avvolgendola in un bagliore cremisi.  L’infusione è regolata dai PE: la carica base richiede 100 PE e genera 500 SAB. Aumentando i PE cresce proporzionalmente anche il valore di SAB, che stabilisce la temperatura della lama.  Al contatto, la spada incandescente brucia inevitabilmente i Parametri avversari, costringendoli a scontrarsi direttamente con la sua energia distruttiva.</p>",
         "tColor": "#8a0a0a",
         "bColor": "#740202",
         "bA": 0.35,
         "bgColor": "#000000",
         "bgA": 0.25
+      },
+      {
+        "type": "effect",
+        "title": "Karyūdon",
+        "tag": "[ATK - Distanza]",
+        "html": "<p>King converte il parametro PE in fiamme pure. La conversione è diretta: ogni 100 PE immessi generano un valore equivalente di SAB. Questi valori non incrementano l’Attacco, ma innalzano temperatura e potenza delle fiamme, che diventano la vera arma. I SAB così generati non alterano i parametri avversari, bensì bruciano gli effetti in contrasto. Se gli effetti vengono esauriti, le fiamme passano a consumare prima gli equipaggiamenti e, infine, i fattori fisici attivi in scheda, in una scalata distruttiva inevitabile.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "Karyūdon – Assalto dei Draghi Cremisi",
+        "tag": "[SAB - Area]",
+        "html": "<p>King rilascia draghi di fuoco cremisi che si librano sul campo di battaglia, muovendosi inarrestabili. Ogni volta che un avversario compie un’azione che richiede movimento, i draghi reagiscono autonomamente, applicando un danno effetto diretto sul nemico.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "Cielo di Guerra",
+        "tag": "",
+        "html": "<p>L’utilizzatore trascina il duello nei cieli, sfruttando volo, altitudine e velocità per dominare lo spazio di battaglia.  Nei <strong>contrasti ravvicinati</strong>, l’avversario è costretto a <strong>raddoppiare la propria carica di PE</strong>. Questo incremento non è un costo base della tecnica, ma un <strong>costo reale e concreto</strong>, pari allo sforzo necessario per avvicinarsi e compiere azioni in aria, configurandosi quindi come un’azione distinta rispetto a quella standard.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "Ondata Cremisi",
+        "tag": "[DEF/ATK- AREA]",
+        "html": "<p>L’utilizzatore sprigiona le proprie fiamme in una massa devastante che travolge il campo di battaglia. Il valore <strong>SAB</strong> brucia in maniera <strong>concreta e reale i PE dell’avversario</strong>: anche chi fosse immune alle fiamme viene costretto a subirne l’effetto. Per poter comunque eseguire la propria azione, l’avversario deve <strong>compensare immediatamente la perdita di PE</strong>, anche in negativo, sostenendo lo sforzo imposto dall’impatto delle fiamme.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "Velocità Regale",
+        "tag": "[SUP - Indotto]",
+        "html": "<p>Spegnendo le proprie fiamme, King convoglia ogni energia nella pura velocità, trasformandosi in un’ombra inafferrabile.  Questa supremazia gli permette di <strong>imporre le proprie condizioni ed effetti un istante prima del nemico</strong>, anticipando ogni sua azione e dominando lo scontro con la rapidità assoluta della stirpe Lunaria.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
+      },
+      {
+        "type": "effect",
+        "title": "Sigillo Cremisi",
+        "tag": "",
+        "html": "<p>L’utilizzatore blocca il colpo nemico e, sfruttando la propria supremazia, applica le condizioni necessarie a <strong>manomettere la base dell’attacco</strong>, rendendone l’effetto inutilizzabile <strong>per il turno successivo</strong>.</p>",
+        "tColor": "#8a0a0a",
+        "bColor": "#8a0a0a",
+        "bA": 0.35,
+        "bgColor": "#000000",
+        "bgA": 0.06
       }
     ]
   }
